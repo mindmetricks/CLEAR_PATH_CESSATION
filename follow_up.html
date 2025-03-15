@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weekly Cessation Follow-Up</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6c5b7b;
+            --secondary-color: #355c7d;
+            --accent-color: #c06c84;
+            --light-color: #f6f4f5;
+            --dark-color: #666;
+            --success-color: #6ab04c;
+            --warning-color: #f9ca24;
+            --danger-color: #eb4d4b;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            margin-top: 5px;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 7px 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-bottom: 20px;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weekly Cessation Follow-Up</h1>
+        
+        <div id="weekSelection" class="form-group">
+            <label for="weekDropdown">Select Week of Treatment:</label>
+            <select id="weekDropdown">
+                <option value="2">Week 2</option>
+                <option value="3">Week 3</option>
+                <option value="4">Week 4</option>
+                <option value="5">Week 5</option>
+                <option value="6">Week 6</option>
+            </select>
+            <button onclick="showWeeklyInputs()">Next</button>
+        </div>
+        
+        <div id="weeklyInputs" style="display: none;"></div>
+        
+        <div id="finalInputs" style="display: none;">
+            <h2>Final Information</h2>
+            <label for="nicotineLevel">Mean Daytime Blood Nicotine Level at Start of Treatment:</label>
+            <input type="number" id="nicotineLevel" placeholder="Enter level">
+            
+            <label for="susceptibility">Physiological Susceptibility:</label>
+            <select id="susceptibility">
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+            
+            <label for="wswsScore">Withdrawal Score (WSWS):</label>
+            <input type="number" id="wswsScore" placeholder="Enter score">
+            
+            <button onclick="submitData()">Submit</button>
+        </div>
+        
+        <div id="recommendation" style="display: none;"></div>
+        
+        <div id="progressBar" class="progress-bar" style="display: none;">
+            <div id="progressFill" class="progress-fill"></div>
+        </div>
+    </div>
+    
+    <script>
+        function showWeeklyInputs() {
+            let selectedWeek = parseInt(document.getElementById('weekDropdown').value);
+            let weeklyInputs = document.getElementById('weeklyInputs');
+            weeklyInputs.innerHTML = '';
+            
+            for (let i = 1; i < selectedWeek; i++) {
+                let weekDiv = document.createElement('div');
+                weekDiv.innerHTML = `
+                    <h3>Week ${i}</h3>
+                    <label for="patch${i}">Daily Patch Dosage:</label>
+                    <input type="number" id="patch${i}" placeholder="Enter dosage">
+                    
+                    <label for="gum${i}">Daily Gum Dosage:</label>
+                    <input type="number" id="gum${i}" placeholder="Enter dosage">
+                    
+                    <label for="adherence${i}">Adherence:</label>
+                    <select id="adherence${i}">
+                        <option value="complete">Complete</option>
+                        <option value="somewhat">Somewhat Properly</option>
+                        <option value="not">Not Properly</option>
+                    </select>
+                `;
+                weeklyInputs.appendChild(weekDiv);
+            }
+            
+            weeklyInputs.style.display = 'block';
+            document.getElementById('finalInputs').style.display = 'block';
+            document.getElementById('weekSelection').style.display = 'none';
+        }
+        
+        function submitData() {
+            let selectedWeek = parseInt(document.getElementById('weekDropdown').value);
+            let weeklyData = [];
+            
+            for (let i = 1; i < selectedWeek; i++) {
+                weeklyData.push({
+                    patch: parseFloat(document.getElementById(`patch${i}`).value),
+                    gum: parseFloat(document.getElementById(`gum${i}`).value),
+                    adherence: document.getElementById(`adherence${i}`).value
+                });
+            }
+
+            
+            let nicotineLevel = parseFloat(document.getElementById('nicotineLevel').value);
+            let susceptibility = document.getElementById('susceptibility').value;
+            let wswsScore = parseFloat(document.getElementById('wswsScore').value);
+            
+            let Upregulation = 1 + 1.4 * Math.pow(nicotineLevel, 0.6);
+            let Copy_UP = Upregulation
+
+            
+            let downregulation_parameter = 0.7
+
+            if (susceptibility === 'low') {
+                downregulation_parameter = 0.5
+            } else if (susceptibility === 'medium') {
+                downregulation_parameter = 0.7
+            } else if (susceptibility === 'high') {
+                downregulation_parameter = 0.9
+            }
+
+            for (let week of weeklyData ) {
+                console.log("Upregulation at week start", week, ":", Upregulation); // Logging Upregulation
+                console.log("Gum at week start", week, ":", week.gum); // Logging Upregulation
+                console.log("Patch at week start", week, ":", week.patch); // Logging Upregulation
+                let M0 = 1;
+                let N0 = 5;
+                let U0 = Upregulation;
+                let Gum = week.gum
+                let Patch = week.patch
+                let half_life = 2 * 3600;
+                let release_duration = 24 * 3600;
+                let elimination_rate = Math.log(2) / half_life;
+                let absorption_rate = Patch / release_duration;
+                let blood = 6000;
+                let nano = 1000000;
+
+                for (let t = 0; t < 7; t++) {
+                    N0 += Gum * 0.025 * (nano / blood);
+                    for (let i = 0; i < 16; i++) {
+                        for (let j = 0; j < 36; j++) {
+                            N0 += absorption_rate * 100 * (nano / blood) * 0.05;
+                            N0 *= Math.exp(-elimination_rate * 100);
+                            M0 = (100 - 100 * N0 / (0.75 + N0)) * U0;
+                            U0 = Math.max(1, U0 + 0.00015 * (downregulation_parameter - M0 / 100));
+                        }
+                    }
+                    for (let i = 0; i < 8; i++) {
+                        for (let j = 0; j < 36; j++) {
+                            N0 *= Math.exp(-elimination_rate * 100);
+                            M0 = (100 - 100 * N0 / (0.75 + N0)) * U0;
+                            U0 = Math.max(1, U0 + 0.00015 * (downregulation_parameter - M0 / 100));
+                        }
+                    }
+                }
+
+                let adherenceFactor = week.adherence === 'complete' ? 1 : week.adherence === 'somewhat' ? 0.5 : 0;
+                
+                let temp = Upregulation - (Upregulation - U0)*adherenceFactor
+                Upregulation = temp
+
+                
+            }
+            
+            let progress = (Copy_UP - Upregulation) / Copy_UP * 100;
+            progress = Math.min(100, Math.max(0, progress)); 
+            
+            let Dosage = Math.pow((Upregulation - 1) / 1.4, 5 / 3);
+
+            let patchRecommendation = 0;
+            let gumRecommendation = 0;
+
+            let withdrawal_tolerance = 0.75
+
+            if (wswsScore <= 27) {
+                    withdrawal_tolerance = 0.5;
+                } else if (wswsScore  <= 40) {
+                    withdrawal_tolerance = 0.75;
+                } else  {
+                    withdrawal_tolerance = 1;
+            }
+            
+            if (susceptibility === 'low') {
+                patchRecommendation = (Dosage * withdrawal_tolerance) ;
+                if (patchRecommendation % 7 < 4) {
+                    patchRecommendation = Math.floor(patchRecommendation / 7) * 7; 
+                    patchRecommendation = Math.min(patchRecommendation, weeklyData[weeklyData.length - 1].patch);
+                } else {
+                    patchRecommendation = Math.ceil(patchRecommendation / 7) * 7;  
+                    patchRecommendation = Math.min(patchRecommendation, weeklyData[weeklyData.length - 1].patch);
+                }
+                if(withdrawal_tolerance = 0.5){
+                    gumRecommendation = 2;
+                    gumRecommendation = Math.min(gumRecommendation, weeklyData[weeklyData.length - 1].gum);
+                } else {
+                    gumRecommendation = 4;
+                    gumRecommendation = Math.min(gumRecommendation, weeklyData[weeklyData.length - 1].gum);
+                }
+            } else if (susceptibility === 'medium') {
+                patchRecommendation = (Dosage * withdrawal_tolerance) ;
+                if (patchRecommendation % 7 < 4) {
+                    patchRecommendation = Math.floor(patchRecommendation / 7) * 7; 
+                    patchRecommendation = Math.min(patchRecommendation, weeklyData[weeklyData.length - 1].patch);
+                } else {
+                    patchRecommendation = Math.ceil(patchRecommendation / 7) * 7;  
+                    patchRecommendation = Math.min(patchRecommendation, weeklyData[weeklyData.length - 1].patch);
+                }
+
+                if(withdrawal_tolerance = 0.5){
+                    gumRecommendation = 2;
+                    gumRecommendation = Math.min(gumRecommendation, weeklyData[weeklyData.length - 1].gum);
+                } else {
+                    gumRecommendation = 4;
+                    gumRecommendation = Math.min(gumRecommendation, weeklyData[weeklyData.length - 1].gum);
+                }
+            } else if (susceptibility === 'high') {
+                patchRecommendation = (Dosage * withdrawal_tolerance) ;
+                if (patchRecommendation % 7 < 4) {
+                    patchRecommendation = Math.floor(patchRecommendation / 7) * 7; 
+                    patchRecommendation = Math.min(patchRecommendation, weeklyData[weeklyData.length - 1].patch);
+
+                } else {
+                    patchRecommendation = Math.ceil(patchRecommendation / 7) * 7;  
+                    patchRecommendation = Math.min(patchRecommendation, weeklyData[weeklyData.length - 1].patch);
+                }
+                if(withdrawal_tolerance = 0.5){
+                    gumRecommendation = 2;
+                    gumRecommendation = Math.min(gumRecommendation, weeklyData[weeklyData.length - 1].gum);
+                } else {
+                    gumRecommendation = 4;
+                    gumRecommendation = Math.min(gumRecommendation, weeklyData[weeklyData.length - 1].gum);
+                }
+            }
+
+
+            let progressBar = document.getElementById('progressBar');
+            let progressFill = document.getElementById('progressFill');
+            progressBar.style.display = 'block';
+            progressFill.style.width = `${progress}%`;
+            
+            let recommendation = document.getElementById('recommendation');
+            recommendation.innerHTML = `
+                <h2>Recommendations for Week ${selectedWeek}</h2>
+                <p>Nicotine Patch: ${patchRecommendation.toFixed(0)} mg</p>
+                <p>Nicotine Gum: ${gumRecommendation} mg</p>
+                  
+            `;
+            recommendation.style.display = 'block';
+            
+            document.getElementById('progressBar').insertAdjacentHTML('afterend', 
+                `<p>You are ${progress.toFixed(0)}% through your treatment program.</p>`
+            );
+        }
+    </script>
+    <div class="footer">
+        <a href="index.html" class="btn btn-primary">Back to Homepage</a>
+    </div>
+    
+                
+</body>
+</html>

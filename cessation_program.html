@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>First Week Cessation Program Designer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6c5b7b;
+            --secondary-color: #355c7d;
+            --accent-color: #c06c84;
+            --light-color: #f6f4f5;
+            --dark-color: #666;
+            --success-color: #6ab04c;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f0f7ff;
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .program-day {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .program-day h3 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .info-box {
+            background-color: #e7f3ff;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
+        }
+        
+        .recommendation-box {
+            background-color: #f0fff0;
+            border: 1px solid #6ab04c;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .recommendation-title {
+            color: #6ab04c;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="index.html" class="logo">Smoking Assessment</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>First Week Cessation Program Designer</h1>
+        
+        <div class="info-box">
+            <h3>About This Tool</h3>
+            <p>This program designer creates a personalized first-week smoking cessation plan based on your current nicotine intake, dependence level, and physiological susceptibility to nicotine.</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="dailyNicotine">Threshold Blood Nicotine Level (ng/ml):</label>
+            <input type="number" id="dailyNicotine" min="0" step="0.01" placeholder="e.g., 15.4">
+            <small>You can calculate this using our <a href="nicotine_calculator.html">Nicotine Absorption Calculator</a></small>
+        </div>
+        
+        <div class="form-group">
+            <label for="ftndScore">FTND Score (0-10):</label>
+            <input type="number" id="ftndScore" min="0" max="10" placeholder="e.g., 7">
+            <small>Fagerström Test for Nicotine Dependence score measures your physical dependence on nicotine</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="physiologicalSusceptibility">Physiological Susceptibility:</label>
+            <select id="physiologicalSusceptibility">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+            </select>
+            <small>How quickly your body develops dependence on nicotine</small>
+        </div>
+        
+        <button onclick="designCessationProgram()">Design My Program</button>
+        
+        <div id="resultContainer" class="result-container">
+            <h2>Your Personalized First Week Cessation Program</h2>
+            <div id="programResults"></div>
+        </div>
+        
+        <a href="index.html" class="back-link">Back to Home</a>
+    </div>
+
+    <script>
+        function designCessationProgram() {
+            const dailyNicotine = parseFloat(document.getElementById('dailyNicotine').value);
+            const ftndScore = parseInt(document.getElementById('ftndScore').value);
+            const physiologicalSusceptibility = document.getElementById('physiologicalSusceptibility').value;
+            
+            if (isNaN(dailyNicotine) || isNaN(ftndScore) || dailyNicotine < 0 || ftndScore < 0 || ftndScore > 10) {
+                alert("Please enter valid values for all fields.");
+                return;
+            }
+            
+            // Determine FTND category
+            let ftndCategory;
+            if (ftndScore >= 7) {
+                ftndCategory = "high";
+            } else if (ftndScore >= 4) {
+                ftndCategory = "medium";
+            } else {
+                ftndCategory = "low";
+            }
+            
+            // Generate program based on FTND and physiological susceptibility
+            const programHTML = generateProgram(dailyNicotine, ftndCategory, physiologicalSusceptibility);
+            
+            // Display results
+            document.getElementById('programResults').innerHTML = programHTML;
+            document.getElementById('resultContainer').style.display = 'block';
+        }
+        
+        function generateProgram(dailyNicotine, ftndCategory, susceptibility) {
+                let html = '';
+                let weekOneRecommendation = '';
+                
+                // First week recommendation based on FTND and susceptibility
+                if (ftndCategory === "high" && susceptibility === "high") {
+                    // High FTND + High susceptibility: Varenicline for first week
+                    weekOneRecommendation = `
+                        <div class="recommendation-box">
+                            <div class="recommendation-title">First Week Recommendation:</div>
+                            <p><strong>Primary Treatment:</strong> Varenicline (Chantix)</p>
+                            <p><strong>Dosage:</strong> As prescribed by your healthcare provider</p>
+                            <p><strong>Additional Support:</strong> Intensive behavioral therapy and daily withdrawal monitoring</p>
+                            <p><strong>Rationale:</strong> With your high nicotine dependence and high physiological susceptibility, 
+                            Varenicline is recommended to reduce both physiological and psychological dependence.</p>
+                        </div>
+                    `;
+                } else if (ftndCategory === "high") {
+                    // High FTND + Low/Medium susceptibility: Higher dose NRT
+                    let patchDosage = Math.round(dailyNicotine / 7) * 7;
+                    if (patchDosage % 7 < 4) {
+                        patchDosage = Math.floor(patchDosage / 7) * 7;
+                    }  else { 
+                        patchDosage = Math.ceil(patchDosage / 7) * 7;  
+                    }
+                    if (patchDosage === 0){
+                        patchDosage = 7;
+                    }
+                    if (patchDosage >= 44){
+                        patchDosage = 44;
+                    }
+                    weekOneRecommendation = `
+                        <div class="recommendation-box">
+                            <div class="recommendation-title">First Week Recommendation:</div>
+                            <p><strong>Morning:</strong> 4mg nicotine gum</p>
+                            <p><strong>Throughout day:</strong> 16-hour nicotine patch (${patchDosage}mg)</p>
+                            <p><strong>Rationale:</strong> With your high nicotine dependence but ${susceptibility} physiological susceptibility, 
+                            this NRT combination will help manage withdrawal symptoms while beginning to reduce dependence.</p>
+                        </div>
+                    `;
+                } else if (ftndCategory === "medium") {
+                    // Medium FTND: Medium dose NRT
+                    let patchDosage = Math.round((dailyNicotine * 0.5) / 7) ;
+                    if (patchDosage % 7 < 4) {
+                        patchDosage = Math.floor(patchDosage / 7) * 7;
+                    }  else { 
+                        patchDosage = Math.ceil(patchDosage / 7) * 7;  
+                    }
+                    if (patchDosage === 0){
+                        patchDosage = 7;
+                    }
+                    if (patchDosage >= 44){
+                        patchDosage = 44;
+                    }
+                    weekOneRecommendation = `
+                        <div class="recommendation-box">
+                            <div class="recommendation-title">First Week Recommendation:</div>
+                            <p><strong>Morning:</strong> 2mg nicotine gum</p>
+                            <p><strong>Throughout day:</strong> 16-hour nicotine patch (${patchDosage}mg)</p>
+                            <p><strong>Rationale:</strong> With your moderate nicotine dependence, this balanced NRT approach 
+                            will help manage withdrawal symptoms while actively reducing dependence.</p>
+                        </div>
+                    `;
+                } else {
+                    // Low FTND: Behavioral program with occasional gums
+                    weekOneRecommendation = `
+                        <div class="recommendation-box">
+                            <div class="recommendation-title">First Week Recommendation:</div>
+                            <p><strong>Primary Treatment:</strong> Behavioral program</p>
+                            <p><strong>Supplementary Support:</strong> Occasional 2mg nicotine gum (maximum 3-4 pieces per day)</p>
+                            <p><strong>Rationale:</strong> With your low nicotine dependence, focusing on behavioral strategies 
+                            with minimal NRT support will be most effective for your cessation journey.</p>
+                        </div>
+                    `;
+                }
+                
+                // Add recommendations to HTML
+                html += weekOneRecommendation;
+                
+                // Add behavioral strategies based on FTND category
+                html += generateBehavioralStrategies(ftndCategory, susceptibility);
+                
+                return html;
+            }
+
+        
+        function generateBehavioralStrategies(ftndCategory, susceptibility) {
+            let strategies = `
+                <h3>Recommended Behavioral Strategies</h3>
+                <ul>
+            `;
+            
+            // Common strategies for all
+            strategies += `
+                <li>Identify and avoid your smoking triggers</li>
+                <li>Practice deep breathing when cravings occur</li>
+                <li>Increase water intake to help flush nicotine from your system</li>
+            `;
+            
+            // Specific strategies based on FTND and susceptibility
+            if (ftndCategory === "high") {
+                strategies += `
+                    <li>Set up daily check-ins with a support person</li>
+                    <li>Use the Wisconsin Withdrawal Scale daily to monitor symptoms</li>
+                    <li>Consider stress-reduction techniques like meditation or yoga</li>
+                `;
+                
+                if (susceptibility === "high") {
+                    strategies += `
+                        <li>Schedule twice-weekly counseling sessions</li>
+                        <li>Create a detailed hour-by-hour plan for the first 72 hours</li>
+                    `;
+                }
+            } else if (ftndCategory === "medium") {
+                strategies += `
+                    <li>Replace smoking rituals with new healthy habits</li>
+                    <li>Exercise moderately for at least 30 minutes daily</li>
+                    <li>Use mindfulness techniques when cravings occur</li>
+                `;
+            } else {
+                strategies += `
+                    <li>Focus on changing routines associated with smoking</li>
+                    <li>Use oral substitutes (sugar-free gum, cinnamon sticks) for hand-to-mouth habit</li>
+                    <li>Track your progress with a cessation app or journal</li>
+                `;
+            }
+            
+            strategies += `</ul>`;
+            return strategies;
+        }
+    </script>
+</body>
+</html>

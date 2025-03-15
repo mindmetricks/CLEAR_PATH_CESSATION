@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Nicotine Absorption Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6c5b7b;
+            --secondary-color: #355c7d;
+            --accent-color: #c06c84;
+            --light-color: #f6f4f5;
+            --dark-color: #666;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f0f7ff;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--secondary-color);
+            display: none;
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .result-line {
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #f0f7ff, #e3f2fd);
+        }
+
+        .highlight {
+            color: #c06c84;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="index.html" class="logo">Smoking Assessment</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Daily Nicotine Absorption Calculator</h1>
+
+        <label for="cigarettes">Number of cigarettes per day:</label>
+        <input type="number" id="cigarettes" min="0" placeholder="e.g., 5">
+
+        <label for="nicotineContent">Average Nicotine Content per Cigarette (mg):</label>
+        <input type="number" id="nicotineContent" step="0.01" min="0" placeholder="e.g., 10">
+
+        <label for="inhalationDepth">Inhalation Depth:</label>
+        <select id="inhalationDepth">
+            <option value="0.05">Shallow </option>
+            <option value="0.1" selected>Normal </option>
+            <option value="0.15">Deep </option>
+        </select>
+
+        <button onclick="calculateNicotineAbsorption()">Calculate</button>
+
+        <div class="result" id="resultArea"></div>
+        
+        <a href="index.html" class="back-link">Back to Home</a>
+    </div>
+
+    <script>
+        function calculateNicotineAbsorption() {
+            const cigarettes = parseFloat(document.getElementById('cigarettes').value);
+            const nicotineContent = parseFloat(document.getElementById('nicotineContent').value);
+            const inhalationDepth = parseFloat(document.getElementById('inhalationDepth').value);
+    
+            if (isNaN(cigarettes) || isNaN(nicotineContent) || cigarettes <= 0 || nicotineContent <= 0) {
+                alert("Please enter valid positive numbers for cigarettes and nicotine content.");
+                return;
+            }
+    
+            const BLOOD_VOLUME = 6000; // mL
+            const HALF_LIFE = 2; // hours
+            const ELIMINATION_CONSTANT = Math.LN2 / (HALF_LIFE * 60); // Convert half-life to per-minute decay rate
+            const TOTAL_DURATION = 16 * 60; // Convert hours to minutes
+    
+            const INTERVAL = Math.floor(TOTAL_DURATION / cigarettes); // Interval in minutes
+            let bloodNicotine = 0;
+            let nicotineSum = 0; // Sum of nicotine values at each minute
+            let nicotineSamples = 0;
+            let preCigaretteNicotineSum = 0;
+            let preCigaretteCount = 0;
+    
+            // Convert nicotine content to ng
+            const NICOTINE_ABSORBED_PER_CIG = (nicotineContent * inhalationDepth * 1000000) / (BLOOD_VOLUME * 10);
+    
+            for (let i = 0; i < cigarettes; i++) {
+                // Store pre-cigarette level before adding nicotine
+                preCigaretteNicotineSum += bloodNicotine;
+                preCigaretteCount++;
+    
+                // Add nicotine from cigarette
+                bloodNicotine += NICOTINE_ABSORBED_PER_CIG;
+    
+                // Apply minute-by-minute elimination until next cigarette
+                for (let j = 0; j < INTERVAL; j++) {
+                    nicotineSum += bloodNicotine;
+                    nicotineSamples++;
+                    bloodNicotine *= Math.exp(-ELIMINATION_CONSTANT);
+                }
+            }
+    
+            // Final decay after last cigarette, minute-by-minute
+            const remainingTime = TOTAL_DURATION - (cigarettes * INTERVAL);
+            for (let j = 0; j < remainingTime; j++) {
+                nicotineSum += bloodNicotine;
+                nicotineSamples++;
+                bloodNicotine *= Math.exp(-ELIMINATION_CONSTANT);
+            }
+    
+            // Compute mean nicotine level over time
+            const meanNicotineLevel = nicotineSum / nicotineSamples;
+    
+            // Compute threshold nicotine level (pre-cigarette mean)
+            const thresholdNicotineLevel = preCigaretteNicotineSum / (preCigaretteCount-1);
+    
+            // Display results
+            const resultArea = document.getElementById('resultArea');
+            resultArea.style.display = 'block';
+            resultArea.innerHTML = `
+                <div class="result-line">
+                    Daily Nicotine Absorbed: <span class="highlight">${(cigarettes * nicotineContent * inhalationDepth).toFixed(2)} mg</span>
+                </div>
+                <div class="result-line">
+                    Mean Daytime Blood Nicotine Level*: <span class="highlight">${meanNicotineLevel.toFixed(1)} ng/mL</span>
+                </div>
+                <div class="result-line">
+                    Threshold Blood Nicotine Level : <span class="highlight">${thresholdNicotineLevel.toFixed(1)} ng/mL</span>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
