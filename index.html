@@ -104,6 +104,7 @@
 
         /* Hero Section Styles */
         .hero {
+            position: relative; /* ✅ Added this line */
             text-align: center;
             padding: 6rem 0;
             background: radial-gradient(circle at top, #ffffff, #f0f5ff);  
@@ -347,8 +348,10 @@
         }
 
         body.dark-mode .hero {
-            background-color: #2d3748;
+          background: #1e293b;
+          color: #f8fafc;
         }
+
 
         body.dark-mode .hero h1,
         body.dark-mode .hero p {
@@ -445,15 +448,21 @@
           object-fit: cover;
           filter: brightness(0.65);
         }
-        
+
         .slide-text {
           position: absolute;
-          bottom: 20%;
-          left: 10%;
-          color: white;
-          max-width: 600px;
-          animation: fadeInUp 1s ease-in-out;
+          bottom: 40px;
+          left: 50%;
+          transform: translateX(-50%);
+          color: #fff;
+          opacity: 0; /* ✅ Added for fade effect */
+          transition: opacity 0.8s ease;
         }
+        .slide.active .slide-text {
+          opacity: 1;
+        }
+
+        
         
         .slide-text h2 {
           font-family: 'Montserrat', sans-serif;
@@ -537,6 +546,8 @@
     </header>
 
 
+
+
     <section class="hero-slider">
       <div class="slides">
         <!-- Slide 1 -->
@@ -566,9 +577,14 @@
           </div>
         </div>
       </div>
-      ...
-    </section>
     
+      <!-- ✅ Added Dots -->
+      <div class="dots">
+        <div class="dot active" data-index="0"></div>
+        <div class="dot" data-index="1"></div>
+        <div class="dot" data-index="2"></div>
+      </div>
+    </section>
 
     
 
@@ -738,14 +754,16 @@
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
         let currentIndex = 0;
-        
+
         function showSlide(index) {
+          if (!slides.length || !dots.length) return; // ✅ Safety check
           slides.forEach((slide, i) => {
             slide.classList.toggle('active', i === index);
             dots[i].classList.toggle('active', i === index);
           });
           document.querySelector('.slides').style.transform = `translateX(-${index * 100}%)`;
         }
+
         
         dots.forEach(dot => {
           dot.addEventListener('click', () => {
@@ -766,6 +784,7 @@
 </body>
 
 </html>
+
 
 
 
