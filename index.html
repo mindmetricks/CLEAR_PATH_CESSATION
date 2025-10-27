@@ -104,7 +104,7 @@
 
         /* Hero Section Styles */
         .hero {
-            position: relative; /* ✅ Added this line */
+            position: relative; 
             text-align: center;
             padding: 6rem 0;
             background: radial-gradient(circle at top, #ffffff, #f0f5ff);  
@@ -348,10 +348,8 @@
         }
 
         body.dark-mode .hero {
-          background: #1e293b;
-          color: #f8fafc;
+            background-color: #2d3748;
         }
-
 
         body.dark-mode .hero h1,
         body.dark-mode .hero p {
@@ -448,7 +446,7 @@
           object-fit: cover;
           filter: brightness(0.65);
         }
-
+        
         .slide-text {
           position: absolute;
           bottom: 40px;
@@ -462,7 +460,6 @@
           opacity: 1;
         }
 
-        
         
         .slide-text h2 {
           font-family: 'Montserrat', sans-serif;
@@ -547,7 +544,6 @@
 
 
 
-
     <section class="hero-slider">
       <div class="slides">
         <!-- Slide 1 -->
@@ -586,7 +582,6 @@
       </div>
     </section>
 
-    
 
 
     <main class="container">
@@ -754,7 +749,7 @@
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
         let currentIndex = 0;
-
+        
         function showSlide(index) {
           if (!slides.length || !dots.length) return; // ✅ Safety check
           slides.forEach((slide, i) => {
@@ -763,7 +758,6 @@
           });
           document.querySelector('.slides').style.transform = `translateX(-${index * 100}%)`;
         }
-
         
         dots.forEach(dot => {
           dot.addEventListener('click', () => {
@@ -784,8 +778,6 @@
 </body>
 
 </html>
-
-
 
 
 
