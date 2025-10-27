@@ -327,6 +327,43 @@
             transition: var(--transition);
         }
 
+        .hero-slider .slide::before {
+          content: "";
+          position: absolute;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.2));
+          z-index: 1;
+        }
+        
+        .slide-text {
+          position: absolute;
+          bottom: 20%;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 2;
+          text-align: center;
+          max-width: 700px;
+          padding: 1rem;
+        }
+        
+        .slide-text a.btn {
+          margin-top: 1rem;
+          display: inline-block;
+          background: var(--accent-color);
+          color: white;
+          padding: 0.75rem 1.5rem;
+          border-radius: 6px;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+        }
+        .slide-text a.btn:hover {
+          background: var(--secondary-color);
+        }
+
+
+        
+
         .theme-toggle:hover {
             background-color: rgba(255, 255, 255, 0.1);
         }
@@ -460,6 +497,14 @@
           opacity: 1;
         }
 
+        .slide {
+          opacity: 0;
+          transition: opacity 1s ease-in-out;
+        }
+        .slide.active {
+          opacity: 1;
+        }
+
         
         .slide-text h2 {
           font-family: 'Montserrat', sans-serif;
@@ -543,38 +588,41 @@
     </header>
 
 
-
     <section class="hero-slider">
       <div class="slides">
+    
         <!-- Slide 1 -->
         <div class="slide active">
-          <img src="https://cdn.pixabay.com/photo/2016/04/28/20/52/cigarette-1359696_1280.jpg" alt="Understanding Smoking Behavior">
+          <img src="https://cdn.pixabay.com/photo/2017/06/14/16/32/stop-smoking-2407314_1280.jpg" alt="Personalized Smoking Assessment">
           <div class="slide-text">
-            <h2>Understand Smoking Behavior</h2>
-            <p>Explore the biological, psychological, and social factors driving nicotine dependence.</p>
+            <h2>Assess. Understand. Transform.</h2>
+            <p>Begin your personalized journey toward smoking cessation using evidence-based psychological and biological tools.</p>
+            <a href="#assessments" class="btn btn-primary">Explore Assessments</a>
           </div>
         </div>
     
         <!-- Slide 2 -->
         <div class="slide">
-          <img src="https://cdn.pixabay.com/photo/2018/02/06/15/25/no-smoking-3137094_1280.jpg" alt="Nicotine Replacement Therapy">
+          <img src="https://cdn.pixabay.com/photo/2020/03/12/09/54/quit-smoking-4924974_1280.jpg" alt="Nicotine Dependence Understanding">
           <div class="slide-text">
-            <h2>Effective Treatment Strategies</h2>
-            <p>Learn how Nicotine Replacement Therapy and behavioral interventions support long-term cessation.</p>
+            <h2>Science-Backed Tools for Change</h2>
+            <p>Explore validated instruments that uncover the root causes of nicotine dependence—physiological, psychological, and genetic.</p>
+            <a href="#tools" class="btn btn-primary">View Tools</a>
           </div>
         </div>
     
         <!-- Slide 3 -->
         <div class="slide">
-          <img src="https://cdn.pixabay.com/photo/2019/01/26/09/22/success-3950293_1280.jpg" alt="Motivation and Recovery">
+          <img src="https://cdn.pixabay.com/photo/2016/02/19/10/00/success-1207325_1280.jpg" alt="Achieve Smoking Cessation Success">
           <div class="slide-text">
-            <h2>Motivate Change, Sustain Recovery</h2>
-            <p>Stay committed to your health journey with guided assessments and personalized progress tracking.</p>
+            <h2>Track Progress. Stay Motivated.</h2>
+            <p>Monitor your withdrawal, motivation, and success rate with our structured follow-up and feedback system.</p>
+            <a href="cessation_program.html" class="btn btn-primary">Start Program</a>
           </div>
         </div>
+    
       </div>
     
-      <!-- ✅ Added Dots -->
       <div class="dots">
         <div class="dot active" data-index="0"></div>
         <div class="dot" data-index="1"></div>
@@ -749,15 +797,19 @@
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
         let currentIndex = 0;
-        
+
+
         function showSlide(index) {
-          if (!slides.length || !dots.length) return; // ✅ Safety check
           slides.forEach((slide, i) => {
-            slide.classList.toggle('active', i === index);
-            dots[i].classList.toggle('active', i === index);
+            slide.classList.remove('active');
+            dots[i].classList.remove('active');
+            slide.style.opacity = '0';
           });
-          document.querySelector('.slides').style.transform = `translateX(-${index * 100}%)`;
+          slides[index].classList.add('active');
+          dots[index].classList.add('active');
+          slides[index].style.opacity = '1';
         }
+
         
         dots.forEach(dot => {
           dot.addEventListener('click', () => {
@@ -778,6 +830,7 @@
 </body>
 
 </html>
+
 
 
 
