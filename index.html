@@ -35,7 +35,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--light-color);
+            background: linear-gradient(145deg, #f5f9ff, #ffffff);
             color: var(--text-color);
             line-height: 1.7;
         }
@@ -48,6 +48,9 @@
 
         /* Header Styles */
         header {
+            background: rgba(74, 111, 165, 0.85);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);         
             background-color: var(--primary-color);
             color: white;
             padding: 1.5rem 0;
@@ -103,6 +106,7 @@
         .hero {
             text-align: center;
             padding: 6rem 0;
+            background: radial-gradient(circle at top, #ffffff, #f0f5ff);  
             background-color: white;
             border-radius: 16px;
             margin-top: 2rem;
@@ -116,6 +120,35 @@
             margin-bottom: 1.5rem;
             font-weight: 700;
         }
+
+        .hero h1 {
+          animation: fadeSlideIn 1s ease-out;
+        }
+        @keyframes fadeSlideIn {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+
+        .hero-slider img {
+          transform: scale(1.05);
+          transition: transform 3s ease-in-out;
+        }
+        .slide.active img {
+          transform: scale(1);
+        }
+
+
+
+        .scale-card:hover .scale-header {
+          background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+        }
+        .scale-card:hover .btn-primary {
+          transform: scale(1.03);
+        }
+        
+                
+
 
         .hero p {
             font-size: 1.25rem;
@@ -298,11 +331,16 @@
         }
 
 
-        /* Dark Mode Styles */
         body.dark-mode {
-            background-color: #1a202c;
-            color: #e2e8f0;
+          background: radial-gradient(circle at top, #0f172a, #1e293b);
         }
+        
+        body.dark-mode .scale-card {
+          background: #2b3648;
+          border: 1px solid #3c4a63;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
 
         body.dark-mode header {
             background-color: #2d3748;
@@ -315,11 +353,6 @@
         body.dark-mode .hero h1,
         body.dark-mode .hero p {
             color: #e2e8f0;
-        }
-
-        body.dark-mode .scale-card {
-            background-color: #2d3748;
-            border-color: #4a5568;
         }
 
         body.dark-mode .scale-body p {
@@ -349,6 +382,38 @@
         .scale-card:nth-child(7) { animation-delay: 0.6s; }
         .scale-card:nth-child(8) { animation-delay: 0.7s; }
         .scale-card:nth-child(9) { animation-delay: 0.8s; }
+
+
+        .theme-toggle {
+          font-size: 1.4rem;
+          transition: transform 0.3s ease, color 0.3s ease;
+        }
+        .theme-toggle:hover {
+          transform: rotate(20deg) scale(1.2);
+          color: var(--accent-color);
+        }
+
+
+        .section-heading::after {
+          background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+          animation: shimmer 3s infinite linear;
+        }
+        @keyframes shimmer {
+          0% { background-position: 0%; }
+          100% { background-position: 200%; }
+        }
+
+
+        .hero::before {
+          content: '';
+          position: absolute;
+          top: -50px; left: -50px;
+          width: 200px; height: 200px;
+          background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+          opacity: 0.2;
+          filter: blur(80px);
+        }
+
 
 
         /* Hero Slider Section */
@@ -439,6 +504,14 @@
         }
 
 
+        header.scrolled {
+          padding: 0.8rem 0;
+          background: rgba(45, 69, 104, 0.9);
+          transition: all 0.4s ease;
+        }
+        
+
+
 
         
     </style>
@@ -464,13 +537,11 @@
     </header>
 
 
-
-
     <section class="hero-slider">
       <div class="slides">
         <!-- Slide 1 -->
         <div class="slide active">
-          <img src="https://www.bing.com/images/search?view=detailV2&ccid=QJrYwQpv&id=AD346DD5E5D7C361182AD05C9A792E1F49DBCE67&thid=OIP.QJrYwQpvbLML_s0bUCivxwHaIs&mediaurl=https%3a%2f%2fcdn.pixabay.com%2fphoto%2f2016%2f04%2f28%2f20%2f52%2fcigarette-1359696_1280.jpg&exph=1280&expw=1090&q=smoking+image&FORM=IRPRST&ck=452F0ED3D7EE2E9C16B716A51765254F&selectedIndex=6&itb=0" alt="Understanding Smoking Behavior">
+          <img src="https://cdn.pixabay.com/photo/2016/04/28/20/52/cigarette-1359696_1280.jpg" alt="Understanding Smoking Behavior">
           <div class="slide-text">
             <h2>Understand Smoking Behavior</h2>
             <p>Explore the biological, psychological, and social factors driving nicotine dependence.</p>
@@ -479,7 +550,7 @@
     
         <!-- Slide 2 -->
         <div class="slide">
-          <img src="https://www.bing.com/images/search?view=detailV2&ccid=QJrYwQpv&id=AD346DD5E5D7C361182AD05C9A792E1F49DBCE67&thid=OIP.QJrYwQpvbLML_s0bUCivxwHaIs&mediaurl=https%3a%2f%2fcdn.pixabay.com%2fphoto%2f2016%2f04%2f28%2f20%2f52%2fcigarette-1359696_1280.jpg&exph=1280&expw=1090&q=smoking+image&FORM=IRPRST&ck=452F0ED3D7EE2E9C16B716A51765254F&selectedIndex=6&itb=0" alt="Nicotine Replacement Therapy">
+          <img src="https://cdn.pixabay.com/photo/2018/02/06/15/25/no-smoking-3137094_1280.jpg" alt="Nicotine Replacement Therapy">
           <div class="slide-text">
             <h2>Effective Treatment Strategies</h2>
             <p>Learn how Nicotine Replacement Therapy and behavioral interventions support long-term cessation.</p>
@@ -488,22 +559,19 @@
     
         <!-- Slide 3 -->
         <div class="slide">
-          <img src="https://www.bing.com/images/search?view=detailV2&ccid=QJrYwQpv&id=AD346DD5E5D7C361182AD05C9A792E1F49DBCE67&thid=OIP.QJrYwQpvbLML_s0bUCivxwHaIs&mediaurl=https%3a%2f%2fcdn.pixabay.com%2fphoto%2f2016%2f04%2f28%2f20%2f52%2fcigarette-1359696_1280.jpg&exph=1280&expw=1090&q=smoking+image&FORM=IRPRST&ck=452F0ED3D7EE2E9C16B716A51765254F&selectedIndex=6&itb=0" alt="Motivation and Recovery">
+          <img src="https://cdn.pixabay.com/photo/2019/01/26/09/22/success-3950293_1280.jpg" alt="Motivation and Recovery">
           <div class="slide-text">
             <h2>Motivate Change, Sustain Recovery</h2>
             <p>Stay committed to your health journey with guided assessments and personalized progress tracking.</p>
           </div>
         </div>
       </div>
-    
-      <!-- Navigation Dots -->
-      <div class="dots">
-        <span class="dot active" data-index="0" aria-label="Slide 1"></span>
-        <span class="dot" data-index="1" aria-label="Slide 2"></span>
-        <span class="dot" data-index="2" aria-label="Slide 3"></span>
-      </div>
+      ...
     </section>
     
+
+    
+
 
     <main class="container">
         <section class="hero">
@@ -660,6 +728,11 @@
             });
         });
 
+        window.addEventListener('scroll', () => {
+          const header = document.querySelector('header');
+          if (window.scrollY > 50) header.classList.add('scrolled');
+          else header.classList.remove('scrolled');
+        });
 
         // Hero Slider Functionality
         const slides = document.querySelectorAll('.slide');
@@ -693,6 +766,7 @@
 </body>
 
 </html>
+
 
 
 
