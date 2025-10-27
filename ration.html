@@ -3,115 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Craving Management & Rationalization Helper</title>
+  <title>Comprehensive Smoking Craving & Rationalization Checker</title>
   <style>
     :root {
-      --primary: #4a6fa5;
-      --secondary: #166088;
-      --accent: #4fc3f7;
-      --light: #f8f9fa;
-      --dark: #343a40;
-      --success: #28a745;
-      --warning: #ffc107;
+      --primary-color: #4a6fa5;
+      --secondary-color: #166088;
+      --accent-color: #4fc3f7;
+      --light-color: #f8f9fa;
+      --dark-color: #343a40;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
     }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f5f5f5;
+      background: #f5f5f5;
       color: #333;
-      margin: 0;
-      padding: 0;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      margin:0; padding:0;
     }
-    header {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      text-align: center;
-      padding: 1rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      position: sticky; top: 0;
-      z-index: 100;
-    }
-    h1 {
-      font-size: 1.8rem;
-      margin: 0.2rem 0;
-    }
-    main {
+    .container {
       max-width: 900px;
-      margin: 2rem auto;
+      margin: 0 auto;
       padding: 1rem 20px;
     }
-    section {
-      background: white;
-      padding: 1.5rem 2rem;
-      border-radius: 10px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeIn 0.4s ease forwards;
+    header {
+      background: linear-gradient(135deg,var(--primary-color),var(--secondary-color));
+      color:white; padding:1rem 0;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+      position: sticky; top: 0; z-index: 1000;
     }
-    @keyframes fadeIn {
-      to { opacity: 1; transform: translateY(0); }
+    .navbar { display: flex; justify-content:space-between; align-items:center; }
+    .logo { font-size:1.6rem; font-weight:bold; text-decoration:none; color:white; }
+    .home-btn {
+      padding:.5rem 1rem;
+      background:rgba(255,255,255,0.2);
+      color:white;
+      text-decoration:none;
+      border-radius:4px;
+      transition:background .3s;
+    }
+    .home-btn:hover { background:rgba(255,255,255,0.3); }
+    main {padding:2rem 0;}
+    .section-title {
+      text-align:center; margin-bottom:1.5rem;
+      color:var(--primary-color); font-size:1.8rem;
+    }
+    .question, .scale-container, .response-section, .explanation-box {
+      background:white; padding:1.5rem 2rem;
+      border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.07);
+      margin-bottom:1.5rem;
     }
     label {
-      font-weight: 600;
-      display: block;
-      margin-top: 1rem;
+      display:block;
+      margin-bottom:0.5rem;
+      font-weight:600;
     }
     select, input[type="radio"] {
       margin-right: 8px;
-      margin-top: 0.5rem;
     }
     button {
-      background: var(--primary);
+      background: var(--primary-color);
       color: white;
       border: none;
       border-radius: 6px;
       font-size: 1rem;
       padding: 0.75rem 1.5rem;
       cursor: pointer;
-      transition: background 0.3s;
-      margin-top: 1.5rem;
+      transition: background 0.3s ease;
+      margin-top: 1rem;
     }
     button:hover {
-      background: var(--secondary);
+      background: var(--secondary-color);
     }
     .hidden { display: none; }
-    .toolbox, .reflection, .motivation {
-      background-color: #f0f8ff;
-      border-left: 5px solid var(--accent);
-      padding: 1rem;
-      margin-top: 1rem;
-      border-radius: 6px;
-    }
-    .success { color: var(--success); font-weight: bold; }
-    .quote {
-      font-style: italic;
-      color: #444;
-      margin-top: 1.2rem;
-      text-align: center;
-    }
-    ul { margin: 0.5rem 0 0.5rem 1.2rem; }
+    ul { margin-top:12px; margin-bottom:0; padding-left:22px; }
+    ul li { margin-bottom:10px; }
     footer {
-      background: var(--dark);
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-      font-size: 0.9rem;
-      margin-top: 3rem;
+      background-color:var(--dark-color);
+      color:white; text-align:center;
+      padding:1.5rem 0; margin-top:3rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Craving Management & Rationalization Helper</h1>
-    <p>Understand and manage smoking urges with awareness and action</p>
+    <div class="container">
+      <nav class="navbar">
+        <a href="#" class="logo">Smoking Craving & Rationalization Checker</a>
+        <a href="index.html" class="home-btn">Back to Home</a>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <section id="step1">
-      <h2>Step 1: How are you feeling right now?</h2>
+  <main class="container">
+
+    <section id="initial-questions" class="question">
+      <h1 class="section-title">How Are You Feeling Right Now?</h1>
       <form id="cravingForm">
-        <label for="feelingSelect">What best describes your craving right now?</label>
+        <label for="feelingSelect">What do you feel right now?</label>
         <select id="feelingSelect" required>
           <option value="">-- Select your feeling --</option>
           <option value="calm">Calm, no urge to smoke</option>
@@ -120,108 +108,194 @@
           <option value="very_strong">Very strong urge, almost uncontrollable</option>
         </select>
 
-        <label>Would you smoke right now if you could?</label>
-        <input type="radio" name="smokingNow" value="yes" required> Yes
-        <input type="radio" name="smokingNow" value="no"> No
+        <label>Would you be smoking at this moment if you could?</label>
+        <input type="radio" name="smokingNow" value="yes" id="smokingYes" required />
+        <label for="smokingYes" style="display:inline">Yes</label>
+        <input type="radio" name="smokingNow" value="no" id="smokingNo" />
+        <label for="smokingNo" style="display:inline">No</label>
 
-        <label for="walkDistance">How far would you go to get a cigarette?</label>
+        <label for="walkDistance">How far would you be willing to walk to get a cigarette right now? (meters)</label>
         <select id="walkDistance" required>
           <option value="">-- Select distance --</option>
-          <option value="-1">None at all (would not smoke)</option>
-          <option value="0">0 m (would smoke immediately)</option>
+          <option value="0">0 m (would smoke immediately if given)</option>
           <option value="100">100 m</option>
           <option value="500">500 m</option>
-          <option value="1000">1 km</option>
+          <option value="1000">1 km or more</option>
           <option value="any">Any amount of walking</option>
+          <option value="-1">None at all (would not smoke under any cost)</option>
         </select>
 
         <button type="submit">Next</button>
       </form>
     </section>
 
-    <section id="step2" class="hidden">
-      <h2>Step 2: Understanding and Responding</h2>
-      <div id="feedback"></div>
-      <div id="rationalizationPrompt" class="hidden">
-        <label for="reasonSelect">Is there a reason or thought making you want to smoke?</label>
+    <section id="reason-section" class="scale-container hidden">
+      <h2 class="section-title">Understanding Your Impulse to Smoke</h2>
+
+      <div id="resilient-message" class="response-section hidden" style="color: var(--success-color); font-weight: 600;">
+        Keep going! Your resolve is strong.
+      </div>
+
+      <div id="breathwork-message" class="response-section hidden" style="color: var(--primary-color);">
+        Consider using breathwork and mindfulness exercises to help manage cravings and withdrawal.
+      </div>
+
+      <div id="rationalization-prompt" class="response-section hidden">
+        <label for="reasonSelect" style="font-weight:500">Do you feel any reason that makes you want to smoke even though you know you shouldn't?</label>
         <select id="reasonSelect">
           <option value="">-- Select a reason --</option>
           <option value="stress">I'm stressed or anxious</option>
-          <option value="boredom">I'm bored</option>
-          <option value="habit">It's just routine</option>
+          <option value="boredom">I'm bored—want something to do</option>
+          <option value="habit">It's just part of my routine</option>
           <option value="social">I'm with other smokers</option>
-          <option value="reward">I deserve a break</option>
-          <option value="focus">It helps me focus</option>
-          <option value="identity">It's part of who I am</option>
-          <option value="damage">The damage is already done</option>
+          <option value="reward">I deserve a reward/break</option>
+          <option value="focus">It helps me concentrate</option>
+          <option value="identity">It's part of my identity</option>
+          <option value="weight">It keeps me thin</option>
+          <option value="misery">Quitting will make me miserable</option>
+          <option value="genes">It's in my genes/I'm doomed</option>
+          <option value="damage">Damage is already done</option>
+          <option value="rare">I only smoke sometimes/rarely</option>
+          <option value="automaticity">I do it without thinking</option>
+          <option value="mood">It stabilizes my mood</option>
         </select>
-        <div id="explanation" class="toolbox hidden"></div>
+        <div id="explanation" class="explanation-box"></div>
       </div>
-      <div id="toolbox" class="hidden"></div>
-      <div id="reflection" class="hidden"></div>
-      <div id="motivation" class="hidden"></div>
+
+      <div id="last-question" class="response-section hidden" style="margin-top: 1.5rem;">
+        <label>Do you still feel the urge to smoke and find it difficult to control withdrawal?</label>
+        <input type="radio" name="urgeControl" value="yes" id="urgeYes" />
+        <label for="urgeYes" style="display:inline">Yes, I find it difficult</label>
+        <input type="radio" name="urgeControl" value="no" id="urgeNo" />
+        <label for="urgeNo" style="display:inline">No, I feel able to control</label>
+        <button id="finalizeBtn" style="display:block; margin-top:1rem;">Finish</button>
+      </div>
+
+      <div id="final-message" class="response-section hidden" style="font-weight: 600; margin-top: 1rem;"></div>
     </section>
+
   </main>
 
   <footer>
-    <p>&copy; 2025 Craving Management Tool. All Rights Reserved.</p>
+    <div class="container">
+      <p>&copy; 2025 Smoking Assessment Tools. Website by Kshiteesh Bhardwaj.</p>
+    </div>
   </footer>
 
   <script>
     const explanations = {
-      stress: `<h3>Stress Relief — The Comfort Illusion</h3>
-        <ul>
-          <li><strong>Truth:</strong> Smoking feels calming only because it ends nicotine withdrawal.</li>
-          <li><strong>Reframe:</strong> Calm doesn’t come from nicotine—it comes from breathing and release.</li>
-          <li><strong>Try:</strong> Inhale 4 sec, hold 2, exhale 6. Repeat for 2 min.</li>
-        </ul>`,
-      boredom: `<h3>Boredom — The False Fix</h3>
-        <ul>
-          <li>Craving stimulation? Your brain wants novelty, not nicotine.</li>
-          <li><strong>Try:</strong> Walk, doodle, play a song, or text someone. Small actions reset your focus.</li>
-        </ul>`,
-      habit: `<h3>Routine Habit — The Invisible Loop</h3>
-        <ul>
-          <li>You’ve paired smoking with cues (coffee, breaks, driving).</li>
-          <li><strong>Try:</strong> Change the cue—sip water or breathe deeply instead.</li>
-        </ul>`,
-      social: `<h3>Social Influence — Connection Without Smoke</h3>
-        <ul>
-          <li>It’s not cigarettes that connect you—it’s conversation.</li>
-          <li><strong>Try:</strong> Hold water, stand slightly aside, or suggest a walk.</li>
-        </ul>`,
-      reward: `<h3>Reward Thinking — Mistaking Relief for Pleasure</h3>
-        <ul>
-          <li>“I deserve it” is valid—but smoking is not a reward, it’s withdrawal relief.</li>
-          <li><strong>Try:</strong> Real rewards: good food, fresh air, gratitude moment.</li>
-        </ul>`,
-      focus: `<h3>Focus Myth — The Alertness Illusion</h3>
-        <ul>
-          <li>Nicotine removes fog it created. True focus needs oxygen, not smoke.</li>
-          <li><strong>Try:</strong> 10 deep breaths, stand up, stretch your spine.</li>
-        </ul>`,
-      identity: `<h3>Identity — You Are More Than “A Smoker”</h3>
-        <ul>
-          <li>Smoking is something you’ve done, not who you are.</li>
-          <li><strong>Try:</strong> Think: “I’m learning to be free.”</li>
-        </ul>`,
-      damage: `<h3>“Damage Done” — The Healing Starts Now</h3>
-        <ul>
-          <li>Within 20 minutes of not smoking, your body starts healing.</li>
-          <li><strong>Reframe:</strong> Every urge resisted adds to recovery.</li>
+      stress: {
+        title: "Stress Relief Rationalizations — The Comfort Illusion",
+        text: `<ul>
+          <li><strong>Perceived relief:</strong> Smoking feels like stress relief, but it only eases nicotine withdrawal. The calm is an illusion created by ending the discomfort of withdrawal.</li>
+          <li><strong>Cognitive distortions:</strong> Emotional reasoning, catastrophizing, and discounting past successes.</li>
+          <li><strong>Challenge:</strong> Use mindful breathing and a stress diary to distinguish true stress relief from nicotine relief.</li>
         </ul>`
+      },
+      boredom: {
+        title: "Boredom & Stimulation Seeking — Filling the Psychological Void",
+        text: `<ul>
+          <li><strong>Mechanism:</strong> Smoking tricks your brain’s need for novelty and dopamine.</li>
+          <li><strong>Action:</strong> Replace smoking with small engaging activities like a short walk or journaling.</li>
+        </ul>`
+      },
+      habit: {
+        title: "Automatic Habit Loops — The Invisible Pattern",
+        text: `<ul>
+          <li><strong>Core issue:</strong> Smoking is a learned motor sequence triggered by cues.</li>
+          <li><strong>Intervention:</strong> Replace cues with alternative actions such as deep breathing.</li>
+        </ul>`
+      },
+      social: {
+        title: "Social Rationalization — Belonging Through Smoke",
+        text: `<ul>
+          <li><strong>Belief:</strong> Smoking connects you with others but true connection is possible without it.</li>
+          <li><strong>Action:</strong> Cultivate new social rituals such as shared walks or water breaks.</li>
+        </ul>`
+      },
+      reward: {
+        title: "Reward Rationalization — Mistaking Withdrawal for Pleasure",
+        text: `<ul>
+          <li><strong>Perception:</strong> Smoking is mistaken as a reward, but it really relieves nicotine withdrawal.</li>
+          <li><strong>Action:</strong> Redefine reward with positive activities like music or laughter.</li>
+        </ul>`
+      },
+      focus: {
+        title: "Concentration Rationalization — The Alertness Illusion",
+        text: `<ul>
+          <li><strong>Belief:</strong> Smoking feels like it helps focus, but it's just reversing withdrawal fog.</li>
+          <li><strong>Action:</strong> Try hydration, movement, or mindful refocusing instead.</li>
+        </ul>`
+      },
+      identity: {
+        title: "Identity & Self-Narrative — 'I’m Just a Smoker'",
+        text: `<ul>
+          <li><strong>Belief:</strong> Smoking is part of your identity.</li>
+          <li><strong>Reframe:</strong> You are a person who smokes temporarily, not defined by it.</li>
+          <li><strong>Action:</strong> Explore new identity anchors beyond smoking.</li>
+        </ul>`
+      },
+      weight: {
+        title: "Weight Control Rationalization — The False Trade-off",
+        text: `<ul>
+          <li><strong>Belief:</strong> Smoking keeps you thin but at high health cost.</li>
+          <li><strong>Action:</strong> Focus on mindful eating and positive body care instead.</li>
+        </ul>`
+      },
+      misery: {
+        title: "Quitting Misery Rationalization — Fear of Discomfort",
+        text: `<ul>
+          <li><strong>Belief:</strong> Quitting will be miserable, but discomfort peaks briefly.</li>
+          <li><strong>Action:</strong> Track withdrawal and use CBT or mindfulness for relief.</li>
+        </ul>`
+      },
+      genes: {
+        title: "Genetic Fatalism — The Destiny Delusion",
+        text: `<ul>
+          <li><strong>Belief:</strong> Genes doom you, but environment and choices matter most.</li>
+          <li><strong>Action:</strong> Reclaim control with routines and social support.</li>
+        </ul>`
+      },
+      damage: {
+        title: "‘Damage Done’ Rationalization — The Hopelessness Trap",
+        text: `<ul>
+          <li><strong>Belief:</strong> It’s too late to repair damage.</li>
+          <li><strong>Truth:</strong> Healing starts immediately after quitting with measurable benefits.</li>
+        </ul>`
+      },
+      rare: {
+        title: "‘Occasional Smoker’ Rationalization — The Myth of Control",
+        text: `<ul>
+          <li><strong>Belief:</strong> Smoking socially is harmless.</li>
+          <li><strong>Reality:</strong> Occasional use maintains addiction and dependency sensitivity.</li>
+        </ul>`
+      },
+      automaticity: {
+        title: "Automatic Smoking — The Mindless Habit Loop",
+        text: `<ul>
+          <li><strong>Mechanism:</strong> Smoking is an unconscious habit triggered by context.</li>
+          <li><strong>Action:</strong> Use mindfulness to bring awareness and break autopilot behavior.</li>
+        </ul>`
+      },
+      mood: {
+        title: "Mood Regulation Rationalization — Borrowed Stability",
+        text: `<ul>
+          <li><strong>Belief:</strong> Smoking stabilizes mood but causes a cycle of crash and lift.</li>
+          <li><strong>Action:</strong> Stabilize mood naturally with sleep, exercise, and connection.</li>
+        </ul>`
+      }
     };
 
     const form = document.getElementById('cravingForm');
-    const step1 = document.getElementById('step1');
-    const step2 = document.getElementById('step2');
-    const feedback = document.getElementById('feedback');
-    const rationalizationPrompt = document.getElementById('rationalizationPrompt');
-    const explanation = document.getElementById('explanation');
-    const toolbox = document.getElementById('toolbox');
-    const reflection = document.getElementById('reflection');
-    const motivation = document.getElementById('motivation');
+    const reasonSection = document.getElementById('reason-section');
+    const resilientMsg = document.getElementById('resilient-message');
+    const breathworkMsg = document.getElementById('breathwork-message');
+    const rationalizationPrompt = document.getElementById('rationalization-prompt');
+    const explanationBox = document.getElementById('explanation');
+    const lastQuestion = document.getElementById('last-question');
+    const finalMsg = document.getElementById('final-message');
     const reasonSelect = document.getElementById('reasonSelect');
+    const finalizeBtn = document.getElementById('finalizeBtn');
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -229,57 +303,63 @@
       const smokingNow = document.querySelector('input[name="smokingNow"]:checked')?.value;
       const walkDistance = document.getElementById('walkDistance').value;
 
-      step1.classList.add('hidden');
-      step2.classList.remove('hidden');
-      toolbox.innerHTML = ''; reflection.innerHTML = ''; motivation.innerHTML = '';
-      toolbox.classList.add('hidden'); reflection.classList.add('hidden');
-      motivation.classList.add('hidden');
+      form.classList.add('hidden');
+      reasonSection.classList.remove('hidden');
 
-      if (walkDistance === '-1' && smokingNow === 'no') {
-        feedback.innerHTML = `<p class="success">💪 Excellent! You’re in full control — keep reinforcing this strength.</p>`;
-        reflection.innerHTML = `<div class="reflection"><strong>Tip:</strong> Take a moment to appreciate this calm. Each urge you resist rewires your brain toward freedom.</div>`;
-        reflection.classList.remove('hidden');
-        motivation.innerHTML = `<div class="quote">“The craving fades, but your strength stays.”</div>`;
-        motivation.classList.remove('hidden');
-        return;
-      }
-
-      if (feeling === 'strong_urge' || feeling === 'very_strong' || smokingNow === 'yes') {
-        feedback.innerHTML = `<p><strong>Craving detected:</strong> Your mind is signaling an urge. Let’s manage it actively.</p>`;
+      // Logic to separate groups based on craving intensity & willingness
+      if (walkDistance === '-1' || (smokingNow === 'no' && walkDistance === '-1')) {
+        // Resilute - strong no despite feeling or urge
+        resilientMsg.classList.remove('hidden');
+        breathworkMsg.classList.add('hidden');
+        rationalizationPrompt.classList.add('hidden');
+        lastQuestion.classList.add('hidden');
+        finalMsg.textContent = 'Keep up the strong resistance!';
+        finalMsg.classList.remove('hidden');
+      } else if (walkDistance === '0' || walkDistance === '100' || walkDistance === '500' || walkDistance === '1000' || walkDistance === 'any') {
+        // Those with cravings
+        resilientMsg.classList.add('hidden');
+        // Ask if they have a reason they know they shouldn't smoke but still feel urge
         rationalizationPrompt.classList.remove('hidden');
-        toolbox.innerHTML = `<div class="toolbox"><h3>Craving Management Toolbox</h3>
-          <ul>
-            <li><strong>Urge Surfing:</strong> Notice the craving rise and fall without reacting — like watching a wave.</li>
-            <li><strong>Breathing Reset:</strong> Inhale 4s, hold 2s, exhale 6s — repeat for 1 minute.</li>
-            <li><strong>Distraction:</strong> Get water, walk, or text someone — change your environment.</li>
-          </ul></div>`;
-        toolbox.classList.remove('hidden');
-        motivation.innerHTML = `<div class="quote">“This feeling will pass. Freedom grows each time you ride the wave.”</div>`;
-        motivation.classList.remove('hidden');
-      } else if (feeling === 'some_urge') {
-        feedback.innerHTML = `<p>You feel some pull, but it’s manageable. Let’s strengthen awareness.</p>`;
-        reflection.innerHTML = `<div class="reflection"><h3>Mindful Check-In</h3>
-          <p>Ask yourself: What will smoking actually change right now?</p>
-          <p>Breathe in calm — exhale the urge.</p></div>`;
-        reflection.classList.remove('hidden');
-        motivation.innerHTML = `<div class="quote">“Small victories build big freedom.”</div>`;
-        motivation.classList.remove('hidden');
+        breathworkMsg.classList.add('hidden');
+        lastQuestion.classList.remove('hidden');
+        finalMsg.classList.add('hidden');
       } else {
-        feedback.innerHTML = `<p class="success">You’re calm and in control. Stay grounded and aware.</p>`;
-        motivation.innerHTML = `<div class="quote">“Every smoke-free moment is a win.”</div>`;
-        motivation.classList.remove('hidden');
+        // Default fallback, treat as ambivalent with breathwork prompt
+        resilientMsg.classList.add('hidden');
+        breathworkMsg.classList.remove('hidden');
+        rationalizationPrompt.classList.add('hidden');
+        lastQuestion.classList.add('hidden');
+        finalMsg.classList.add('hidden');
       }
     });
 
     reasonSelect.addEventListener('change', () => {
-      const reason = reasonSelect.value;
-      if (!reason) {
-        explanation.classList.add('hidden');
-        explanation.innerHTML = '';
+      const choice = reasonSelect.value;
+      if (!choice) {
+        explanationBox.style.display = 'none';
+        explanationBox.innerHTML = '';
         return;
       }
-      explanation.innerHTML = explanations[reason] || '';
-      explanation.classList.remove('hidden');
+      const { title, text } = explanations[choice];
+      explanationBox.innerHTML = `<h3>${title}</h3>${text}`;
+      explanationBox.style.display = 'block';
+    });
+
+    finalizeBtn.addEventListener('click', () => {
+      const urgeControl = document.querySelector('input[name="urgeControl"]:checked')?.value;
+      if (urgeControl === 'yes') {
+        finalMsg.textContent = "Since you still feel strong urges, try breathwork and mindfulness techniques to manage withdrawal and cravings effectively.";
+        breathworkMsg.classList.remove('hidden');
+      } else if (urgeControl === 'no') {
+        finalMsg.textContent = "Great! Your ability to control cravings is an important strength. Keep using your strategies to stay smoke-free.";
+        breathworkMsg.classList.add('hidden');
+      } else {
+        finalMsg.textContent = "Please select if you find it difficult to control urges or not.";
+        return;
+      }
+      finalMsg.classList.remove('hidden');
+      lastQuestion.classList.add('hidden');
+      rationalizationPrompt.classList.add('hidden');
     });
   </script>
 </body>
