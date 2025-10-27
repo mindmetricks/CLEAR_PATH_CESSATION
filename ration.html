@@ -1,992 +1,286 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Craving Coach — Manage Smoking Urges</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Craving Management & Rationalization Helper</title>
   <style>
-    :root{
-      --bg:#f4f6f8;
-      --card:#ffffff;
-      --primary:#2b6cb0;
-      --accent:#4fc3f7;
-      --success:#28a745;
-      --muted:#6c757d;
-      --danger:#e03131;
-      --glass: rgba(255,255,255,0.7);
-      --radius:12px;
+    :root {
+      --primary: #4a6fa5;
+      --secondary: #166088;
+      --accent: #4fc3f7;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --success: #28a745;
+      --warning: #ffc107;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
-      background: linear-gradient(180deg,#eef3fb,#f4f6f8);
-      color:#1f2933;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      margin: 0;
+      padding: 0;
     }
-    .wrap{
-      max-width:980px;
-      margin:24px auto;
-      padding:20px;
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky; top: 0;
+      z-index: 100;
     }
-    header{
-      background: linear-gradient(90deg,var(--primary),#1f5a91);
-      color:#fff;
-      padding:18px 22px;
-      border-radius:12px;
-      box-shadow:0 6px 20px rgba(43,108,176,0.12);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
+    h1 {
+      font-size: 1.8rem;
+      margin: 0.2rem 0;
     }
-    header h1{margin:0;font-size:1.1rem;letter-spacing:0.2px;}
-    header .sub{opacity:0.95;font-size:0.9rem}
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 380px;
-      gap:18px;
-      margin-top:18px;
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem 20px;
     }
-    main{
-      background:var(--card);
-      padding:18px;
-      border-radius:var(--radius);
-      box-shadow:0 6px 24px rgba(31,41,51,0.06);
+    section {
+      background: white;
+      padding: 1.5rem 2rem;
+      border-radius: 10px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeIn 0.4s ease forwards;
     }
-    aside{
-      background:var(--card);
-      padding:18px;
-      border-radius:var(--radius);
-      height:fit-content;
-      box-shadow:0 6px 24px rgba(31,41,51,0.04);
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
     }
-    label{display:block;margin:10px 0 6px;font-weight:600;color:#233240}
-    select, input[type="text"], input[type="number"]{
-      width:100%;
-      padding:10px 12px;
-      border-radius:8px;
-      border:1px solid #e3e8ee;
-      background:transparent;
-      font-size:0.95rem;
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 1rem;
     }
-    .row{display:flex;gap:10px;align-items:center}
-    .radio-row{display:flex;gap:12px;align-items:center;margin-top:8px}
-    button{
-      background:var(--primary);
-      color:#fff;
-      border:none;
-      padding:10px 14px;
-      border-radius:10px;
-      cursor:pointer;
-      font-weight:600;
+    select, input[type="radio"] {
+      margin-right: 8px;
+      margin-top: 0.5rem;
     }
-    button.ghost{background:transparent;border:1px solid #e3e8ee;color:var(--muted);font-weight:600;}
-    button.small{padding:7px 10px;font-size:0.9rem;border-radius:8px}
-    .hidden{display:none}
-    .section{margin-bottom:14px}
-    .meter{
-      height:18px;
-      background:#eef4fb;
-      border-radius:9px;
-      overflow:hidden;
-      margin-top:8px;
-      border:1px solid #e6eefb;
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 1.5rem;
     }
-    .meter > i{
-      display:block;
-      height:100%;
-      width:0%;
-      background:linear-gradient(90deg,var(--accent),var(--primary));
-      transition:width 450ms ease;
+    button:hover {
+      background: var(--secondary);
     }
-    .message{
-      padding:12px;
-      border-radius:10px;
-      background:linear-gradient(180deg,#ffffff,#f8fbff);
-      border:1px solid #e9f0fb;
-      margin-top:12px;
+    .hidden { display: none; }
+    .toolbox, .reflection, .motivation {
+      background-color: #f0f8ff;
+      border-left: 5px solid var(--accent);
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 6px;
     }
-    .tools{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .tool{background:#fff;padding:10px;border-radius:10px;border:1px solid #eef4fb}
-    .explanation-box{padding:12px;background:#fff;border-radius:10px;border:1px solid #edf3fb;margin-top:10px}
-    .quote{font-style:italic;color:var(--muted);font-size:0.95rem}
-    footer{margin-top:18px;text-align:center;color:var(--muted);font-size:0.92rem}
-    .log-table{width:100%;border-collapse:collapse;margin-top:10px}
-    .log-table th, .log-table td{padding:8px;border-bottom:1px solid #f1f5f9;font-size:0.9rem;text-align:left}
-    .muted{color:var(--muted);font-size:0.9rem}
-    /* breathing circle modal */
-    .modal-backdrop{
-      position:fixed;inset:0;background:rgba(10,15,20,0.45);display:flex;align-items:center;justify-content:center;z-index:2000;
+    .success { color: var(--success); font-weight: bold; }
+    .quote {
+      font-style: italic;
+      color: #444;
+      margin-top: 1.2rem;
+      text-align: center;
     }
-    .modal{
-      width:320px;background:var(--card);padding:18px;border-radius:14px;box-shadow:0 20px 40px rgba(10,20,40,0.25);text-align:center;
-    }
-    .circle{
-      width:160px;height:160px;border-radius:50%;margin:12px auto;background:linear-gradient(180deg,#dff3ff,#e9f8ff);
-      display:flex;align-items:center;justify-content:center;border:6px solid rgba(79,195,247,0.4);
-      transition:transform 700ms ease;
-    }
-    .crisis-box{padding:12px;border-radius:10px;border:1px dashed #ffd8d8;background:#fff7f7;color:var(--danger);font-weight:600}
-    .streak{font-weight:800;color:var(--primary);font-size:1.05rem}
-    /* small responsive */
-    @media (max-width:980px){
-      .grid{grid-template-columns:1fr; }
-      aside{order:2}
+    ul { margin: 0.5rem 0 0.5rem 1.2rem; }
+    footer {
+      background: var(--dark);
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      font-size: 0.9rem;
+      margin-top: 3rem;
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>Craving Coach</h1>
-        <div class="sub">Practical, moment-ready tools to manage smoking urges</div>
+  <header>
+    <h1>Craving Management & Rationalization Helper</h1>
+    <p>Understand and manage smoking urges with awareness and action</p>
+  </header>
+
+  <main>
+    <section id="step1">
+      <h2>Step 1: How are you feeling right now?</h2>
+      <form id="cravingForm">
+        <label for="feelingSelect">What best describes your craving right now?</label>
+        <select id="feelingSelect" required>
+          <option value="">-- Select your feeling --</option>
+          <option value="calm">Calm, no urge to smoke</option>
+          <option value="some_urge">Some urge but manageable</option>
+          <option value="strong_urge">Strong urge to smoke</option>
+          <option value="very_strong">Very strong urge, almost uncontrollable</option>
+        </select>
+
+        <label>Would you smoke right now if you could?</label>
+        <input type="radio" name="smokingNow" value="yes" required> Yes
+        <input type="radio" name="smokingNow" value="no"> No
+
+        <label for="walkDistance">How far would you go to get a cigarette?</label>
+        <select id="walkDistance" required>
+          <option value="">-- Select distance --</option>
+          <option value="-1">None at all (would not smoke)</option>
+          <option value="0">0 m (would smoke immediately)</option>
+          <option value="100">100 m</option>
+          <option value="500">500 m</option>
+          <option value="1000">1 km</option>
+          <option value="any">Any amount of walking</option>
+        </select>
+
+        <button type="submit">Next</button>
+      </form>
+    </section>
+
+    <section id="step2" class="hidden">
+      <h2>Step 2: Understanding and Responding</h2>
+      <div id="feedback"></div>
+      <div id="rationalizationPrompt" class="hidden">
+        <label for="reasonSelect">Is there a reason or thought making you want to smoke?</label>
+        <select id="reasonSelect">
+          <option value="">-- Select a reason --</option>
+          <option value="stress">I'm stressed or anxious</option>
+          <option value="boredom">I'm bored</option>
+          <option value="habit">It's just routine</option>
+          <option value="social">I'm with other smokers</option>
+          <option value="reward">I deserve a break</option>
+          <option value="focus">It helps me focus</option>
+          <option value="identity">It's part of who I am</option>
+          <option value="damage">The damage is already done</option>
+        </select>
+        <div id="explanation" class="toolbox hidden"></div>
       </div>
-      <div style="text-align:right">
-        <div class="muted">Quick tools · CBT reframes · Progress tracking</div>
-      </div>
-    </header>
+      <div id="toolbox" class="hidden"></div>
+      <div id="reflection" class="hidden"></div>
+      <div id="motivation" class="hidden"></div>
+    </section>
+  </main>
 
-    <div class="grid" role="main">
-      <main aria-live="polite">
-        <!-- Step 1: Initial -->
-        <section id="step1" class="section" aria-labelledby="q1">
-          <h2 id="q1">How are you feeling right now?</h2>
-          <form id="cravingForm">
-            <label for="feelingSelect">What do you feel right now?</label>
-            <select id="feelingSelect" required>
-              <option value="">— select feeling —</option>
-              <option value="calm">Calm, no urge to smoke</option>
-              <option value="some_urge">Some urge but manageable</option>
-              <option value="strong_urge">Strong urge to smoke</option>
-              <option value="very_strong">Very strong urge, almost uncontrollable</option>
-            </select>
-
-            <label>Would you smoke right now if you could?</label>
-            <div class="radio-row" role="radiogroup" aria-labelledby="smokelabel">
-              <label><input type="radio" name="smokingNow" value="yes" required> Yes</label>
-              <label><input type="radio" name="smokingNow" value="no"> No</label>
-            </div>
-
-            <label for="walkDistance">How far would you walk to get a cigarette right now?</label>
-            <select id="walkDistance" required>
-              <option value="">— select distance —</option>
-              <option value="0">0 m (would smoke immediately)</option>
-              <option value="50">50 m</option>
-              <option value="100">100 m</option>
-              <option value="500">500 m</option>
-              <option value="1000">1 km or more</option>
-              <option value="any">Any distance</option>
-              <option value="-1">None — I wouldn't smoke</option>
-            </select>
-
-            <div style="display:flex;gap:10px;margin-top:12px">
-              <button type="submit">Assess & Get Help</button>
-              <button type="button" id="openProgress" class="ghost small">View Progress</button>
-            </div>
-          </form>
-
-          <div class="message" id="initialMessage" style="display:none"></div>
-        </section>
-
-        <!-- Step 2: Response & Tools -->
-        <section id="step2" class="section hidden" aria-live="polite">
-          <h2>Personalized Craving Support</h2>
-
-          <div class="row" style="align-items:center;gap:12px">
-            <div style="flex:1">
-              <label>Craving intensity</label>
-              <div class="meter" aria-hidden="true">
-                <i id="meterFill"></i>
-              </div>
-              <div class="muted" style="margin-top:6px">Use the tools below for the next 5 minutes — cravings usually peak and fall.</div>
-            </div>
-
-            <div style="width:180px;text-align:right">
-              <div class="muted">Streak</div>
-              <div class="streak" id="currentStreak">—</div>
-              <div class="muted" style="font-size:0.85rem" id="resistCount">— resisted</div>
-            </div>
-          </div>
-
-          <div class="message" id="primaryAction" style="margin-top:12px"></div>
-
-          <div style="margin-top:12px" id="rationalizationArea">
-            <label for="reasonSelect">Do you notice a reason behind this urge?</label>
-            <select id="reasonSelect">
-              <option value="">— choose a reason (optional) —</option>
-              <option value="stress">Stress or anxiety</option>
-              <option value="boredom">Boredom</option>
-              <option value="habit">Habit/routine</option>
-              <option value="social">Social situation</option>
-              <option value="reward">I want a reward/break</option>
-              <option value="focus">To help focus</option>
-              <option value="identity">Identity ("I'm a smoker")</option>
-              <option value="weight">Weight concerns</option>
-              <option value="misery">Fear quitting will be miserable</option>
-              <option value="genes">It's genetic / I'm doomed</option>
-              <option value="damage">"Damage already done"</option>
-              <option value="rare">"I only smoke rarely"</option>
-              <option value="automaticity">Automatic, mindless action</option>
-              <option value="mood">Mood regulation</option>
-            </select>
-
-            <div class="explanation-box hidden" id="explanation"></div>
-          </div>
-
-          <div style="margin-top:12px" class="tools" id="toolbox">
-            <div class="tool" id="tool-breath">
-              <h4 style="margin:4px 0">Guided Breathing</h4>
-              <div class="muted">Calm your nervous system: 4–2–6 breathing (inhale 4s, hold 2s, exhale 6s)</div>
-              <div style="display:flex;gap:8px;margin-top:10px">
-                <button id="startBreath">Start 2-min Breathing</button>
-                <button id="stopBreath" class="ghost small">Stop</button>
-              </div>
-              <div id="breathStatus" class="muted" style="margin-top:8px">Ready</div>
-            </div>
-
-            <div class="tool" id="tool-urge">
-              <h4 style="margin:4px 0">Urge Surfing</h4>
-              <div class="muted">Observe the craving like a wave — it will crest then pass.</div>
-              <div style="display:flex;gap:8px;margin-top:10px">
-                <button id="startUrge">Start 3-min Urge Exercise</button>
-                <button id="stopUrge" class="ghost small">Stop</button>
-              </div>
-              <div id="urgeStatus" class="muted" style="margin-top:8px">Ready</div>
-            </div>
-          </div>
-
-          <div style="margin-top:12px" id="distractions" class="section">
-            <h4>Quick distraction ideas</h4>
-            <ul id="distractionList">
-              <li>Drink a glass of water slowly</li>
-              <li>Stand up and walk for 3–5 minutes</li>
-              <li>Call or text a supportive friend</li>
-              <li>Do a short physical stretch or push-up set</li>
-              <li>Chew gum or have a mint</li>
-            </ul>
-            <div style="margin-top:8px">
-              <button id="randomDistr" class="small ghost">Give me one thing to do now</button>
-            </div>
-          </div>
-
-          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-            <button id="iResisted" class="small">I resisted</button>
-            <button id="iSmoked" class="small ghost">I smoked</button>
-            <button id="openCrisis" class="small" style="background:#ff7b7b">Crisis Mode</button>
-            <button id="backToStart" class="small ghost">Start Over</button>
-          </div>
-
-          <div id="finalNote" class="message hidden" style="margin-top:12px"></div>
-        </section>
-      </main>
-
-      <aside aria-label="Sidebar">
-        <div style="display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <div>
-            <strong>Session</strong>
-            <div class="muted" style="font-size:0.9rem">Real-time tools & logs</div>
-          </div>
-          <div id="quoteBox" class="quote">"Your future self will thank you for resisting today."</div>
-        </div>
-
-        <div style="margin-top:10px">
-          <div class="muted">Progress summary</div>
-          <div style="margin-top:8px">
-            <div>Resisted: <strong id="summaryResisted">0</strong></div>
-            <div>Gave in: <strong id="summaryGaveIn">0</strong></div>
-            <div>Current streak: <strong id="summaryStreak">0</strong></div>
-          </div>
-        </div>
-
-        <div style="margin-top:12px">
-          <button id="viewLogs" class="small ghost" style="width:100%">Open Progress Dashboard</button>
-        </div>
-
-        <div style="margin-top:12px">
-          <div class="muted">Quick tips</div>
-          <ul style="margin-top:8px">
-            <li>Delay — wait 10 minutes and check again.</li>
-            <li>Label the craving: name the feeling (boredom, stress).</li>
-            <li>Use a small ritual to replace the cue (drink water).</li>
-          </ul>
-        </div>
-
-        <div style="margin-top:12px">
-          <div class="muted">Export / Clear</div>
-          <div style="display:flex;gap:8px;margin-top:6px">
-            <button id="exportLogs" class="small">Export CSV</button>
-            <button id="clearLogs" class="small ghost">Clear</button>
-          </div>
-        </div>
-      </aside>
-    </div>
-
-    <footer>
-      <div>&copy; 2025 Craving Coach · Built for moment-to-moment support</div>
-    </footer>
-  </div>
-
-  <!-- Breathing modal -->
-  <div id="breathModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="breathTitle">
-    <div class="modal">
-      <h3 id="breathTitle">Guided Breathing</h3>
-      <div class="circle" id="breathCircle">4</div>
-      <div class="muted" id="breathInstruction">Inhale 4s • Hold 2s • Exhale 6s</div>
-      <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
-        <button id="closeBreath">Stop</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Urge modal -->
-  <div id="urgeModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="urgeTitle">
-    <div class="modal">
-      <h3 id="urgeTitle">Urge Surfing — Observe the Wave</h3>
-      <div style="margin-top:8px" class="muted">Notice sensations — where in your body do you feel it? Name it.</div>
-      <div style="margin-top:12px" id="urgeTimer">3:00</div>
-      <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
-        <button id="closeUrge">Stop</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Crisis modal -->
-  <div id="crisisModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="crisisTitle">
-    <div class="modal">
-      <h3 id="crisisTitle">Crisis Mode — 5-4-3-2-1 Grounding</h3>
-      <div class="crisis-box" style="margin-top:8px;padding:12px">
-        <div>1) Name 5 things you can see</div>
-        <div>2) Name 4 things you can touch</div>
-        <div>3) Name 3 things you can hear</div>
-        <div>4) Name 2 things you can smell</div>
-        <div>5) Name 1 good thing about yourself</div>
-      </div>
-      <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
-        <button id="closeCrisis">Done</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Progress modal -->
-  <div id="progressModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="progressTitle">
-    <div class="modal" style="width:90%;max-width:760px;">
-      <h3 id="progressTitle">Progress Dashboard</h3>
-      <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:8px">
-        <div style="flex:1;min-width:220px">
-          <div class="muted">Summary</div>
-          <div style="margin-top:8px">
-            <div>Resisted: <strong id="dashResisted">0</strong></div>
-            <div>Gave in: <strong id="dashGaveIn">0</strong></div>
-            <div>Current streak: <strong id="dashStreak">0</strong></div>
-          </div>
-        </div>
-        <div style="flex:2;min-width:260px">
-          <div class="muted">Recent log</div>
-          <table class="log-table" id="logTable" style="margin-top:8px">
-            <thead><tr><th>Time</th><th>Feeling</th><th>Reason</th><th>Outcome</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
-        <button id="closeProgress">Close</button>
-      </div>
-    </div>
-  </div>
+  <footer>
+    <p>&copy; 2025 Craving Management Tool. All Rights Reserved.</p>
+  </footer>
 
   <script>
-    /* -------------------------
-       Data: explanations + quotes
-    --------------------------*/
     const explanations = {
-      stress: {
-        title: "Stress Relief — The Comfort Illusion",
-        text: `<ul>
-          <li><strong>Distortion:</strong> "Smoking calms me." It relieves nicotine withdrawal, not root stress.</li>
-          <li><strong>Reframe:</strong> Real calm comes from breaking the nicotine cycle — cravings pass in minutes.</li>
-          <li><strong>Try:</strong> 3 slow breaths, label the feeling: "This is stress + withdrawal."</li>
+      stress: `<h3>Stress Relief — The Comfort Illusion</h3>
+        <ul>
+          <li><strong>Truth:</strong> Smoking feels calming only because it ends nicotine withdrawal.</li>
+          <li><strong>Reframe:</strong> Calm doesn’t come from nicotine—it comes from breathing and release.</li>
+          <li><strong>Try:</strong> Inhale 4 sec, hold 2, exhale 6. Repeat for 2 min.</li>
+        </ul>`,
+      boredom: `<h3>Boredom — The False Fix</h3>
+        <ul>
+          <li>Craving stimulation? Your brain wants novelty, not nicotine.</li>
+          <li><strong>Try:</strong> Walk, doodle, play a song, or text someone. Small actions reset your focus.</li>
+        </ul>`,
+      habit: `<h3>Routine Habit — The Invisible Loop</h3>
+        <ul>
+          <li>You’ve paired smoking with cues (coffee, breaks, driving).</li>
+          <li><strong>Try:</strong> Change the cue—sip water or breathe deeply instead.</li>
+        </ul>`,
+      social: `<h3>Social Influence — Connection Without Smoke</h3>
+        <ul>
+          <li>It’s not cigarettes that connect you—it’s conversation.</li>
+          <li><strong>Try:</strong> Hold water, stand slightly aside, or suggest a walk.</li>
+        </ul>`,
+      reward: `<h3>Reward Thinking — Mistaking Relief for Pleasure</h3>
+        <ul>
+          <li>“I deserve it” is valid—but smoking is not a reward, it’s withdrawal relief.</li>
+          <li><strong>Try:</strong> Real rewards: good food, fresh air, gratitude moment.</li>
+        </ul>`,
+      focus: `<h3>Focus Myth — The Alertness Illusion</h3>
+        <ul>
+          <li>Nicotine removes fog it created. True focus needs oxygen, not smoke.</li>
+          <li><strong>Try:</strong> 10 deep breaths, stand up, stretch your spine.</li>
+        </ul>`,
+      identity: `<h3>Identity — You Are More Than “A Smoker”</h3>
+        <ul>
+          <li>Smoking is something you’ve done, not who you are.</li>
+          <li><strong>Try:</strong> Think: “I’m learning to be free.”</li>
+        </ul>`,
+      damage: `<h3>“Damage Done” — The Healing Starts Now</h3>
+        <ul>
+          <li>Within 20 minutes of not smoking, your body starts healing.</li>
+          <li><strong>Reframe:</strong> Every urge resisted adds to recovery.</li>
         </ul>`
-      },
-      boredom: {
-        title: "Boredom & Stimulation",
-        text: `<ul>
-          <li><strong>Mechanism:</strong> Habit seeks novelty. Smoking provides a fast, learned stimulation.</li>
-          <li><strong>Try:</strong> Do a 2-minute engaging activity — a short puzzle, stretch, or a walk.</li>
-        </ul>`
-      },
-      habit: {
-        title: "Automatic Habit Loop",
-        text: `<ul>
-          <li><strong>Problem:</strong> A cue triggers a learned response.</li>
-          <li><strong>Try:</strong> Replace the cue-action: when you reach for a cigarette, drink water or tap two fingers for 30s.</li>
-        </ul>`
-      },
-      social: {
-        title: "Social Triggers",
-        text: `<ul>
-          <li><strong>Reality:</strong> Connection matters more than the ritual — create new rituals like a walk or coffee break.</li>
-          <li><strong>Try:</strong> Suggest a smoke-free shared activity the next time you meet friends.</li>
-        </ul>`
-      },
-      reward: {
-        title: "Reward Rationalization",
-        text: `<ul>
-          <li><strong>Note:</strong> Smoking often feels like a reward but it's a relief from withdrawal.</li>
-          <li><strong>Try:</strong> Swap in a short positive reward: a song, a mini-walk, or a small treat.</li>
-        </ul>`
-      },
-      focus: {
-        title: "Concentration Illusion",
-        text: `<ul>
-          <li><strong>Reality:</strong> Nicotine reverses withdrawal fog briefly.</li>
-          <li><strong>Try:</strong> 1 glass of water + 2 minutes of movement to restore focus naturally.</li>
-        </ul>`
-      },
-      identity: {
-        title: "Identity Beliefs",
-        text: `<ul>
-          <li><strong>Reframe:</strong> You may have smoked in the past — that doesn't define who you are now.</li>
-          <li><strong>Try:</strong> Name one identity you want: "I am someone who protects their health."</li>
-        </ul>`
-      },
-      weight: {
-        title: "Weight Concern",
-        text: `<ul>
-          <li><strong>Fact:</strong> Smoking harms health more than small weight changes.</li>
-          <li><strong>Try:</strong> Healthy snacks, hydration, or a short walk after meals.</li>
-        </ul>`
-      },
-      misery: {
-        title: "Fear of Misery When Quitting",
-        text: `<ul>
-          <li><strong>Reality:</strong> Discomfort peaks then declines; most people feel better within weeks.</li>
-          <li><strong>Try:</strong> Track progress — small wins build confidence.</li>
-        </ul>`
-      },
-      genes: {
-        title: "Genetic Fatalism",
-        text: `<ul>
-          <li><strong>Reality:</strong> Genes influence but don't determine behaviour — environment and routines matter.</li>
-          <li><strong>Try:</strong> Build supportive routines and small wins.</li>
-        </ul>`
-      },
-      damage: {
-        title: "It's Not Too Late",
-        text: `<ul>
-          <li><strong>Fact:</strong> The body starts healing after quitting — benefits begin quickly.</li>
-          <li><strong>Try:</strong> Record a small health win (less coughing, better sleep).</li>
-        </ul>`
-      },
-      rare: {
-        title: "Occasional Use Myth",
-        text: `<ul>
-          <li><strong>Reality:</strong> Occasional smoking maintains nicotine sensitivity and risk.</li>
-          <li><strong>Try:</strong> Notice triggers and avoid high-risk situations.</li>
-        </ul>`
-      },
-      automaticity: {
-        title: "Mindless Habit",
-        text: `<ul>
-          <li><strong>Strategy:</strong> Use mindfulness to bring the action into awareness.</li>
-          <li><strong>Try:</strong> Pause, name the urge, and choose an alternative action for 60s.</li>
-        </ul>`
-      },
-      mood: {
-        title: "Mood Regulation",
-        text: `<ul>
-          <li><strong>Reality:</strong> Smoking borrows stability that quickly fades.</li>
-          <li><strong>Try:</strong> Sleep, movement, and social contact for real mood stabilization.</li>
-        </ul>`
-      }
     };
 
-    const quotes = [
-      "Delay 10 minutes — most urges fall by half in that time.",
-      "You're retraining your brain — each resisted urge strengthens new pathways.",
-      "Breathe. Notice. Choose. You have more control than you think.",
-      "Small wins add up. Today’s resistance matters.",
-      "You're doing something hard — be curious and kind to yourself."
-    ];
-
-    /* -------------------------
-       Local storage helpers
-    --------------------------*/
-    const LS_KEY = 'cravingCoachLog_v1';
-
-    function loadLog(){
-      try {
-        return JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-      } catch(e){
-        console.error('loadLog error', e);
-        return [];
-      }
-    }
-    function saveLog(log){
-      localStorage.setItem(LS_KEY, JSON.stringify(log || []));
-    }
-
-    function addEntry(entry){
-      const log = loadLog();
-      log.unshift(entry); // newest first
-      // limit to 500 entries
-      if(log.length>500) log.length = 500;
-      saveLog(log);
-      renderSummary();
-    }
-
-    /* -------------------------
-       UI references
-    --------------------------*/
     const form = document.getElementById('cravingForm');
     const step1 = document.getElementById('step1');
     const step2 = document.getElementById('step2');
-    const meterFill = document.getElementById('meterFill');
-    const primaryAction = document.getElementById('primaryAction');
-    const reasonSelect = document.getElementById('reasonSelect');
+    const feedback = document.getElementById('feedback');
+    const rationalizationPrompt = document.getElementById('rationalizationPrompt');
     const explanation = document.getElementById('explanation');
-    const breathModal = document.getElementById('breathModal');
-    const breathCircle = document.getElementById('breathCircle');
-    const breathInstruction = document.getElementById('breathInstruction');
-    const breathStatus = document.getElementById('breathStatus');
-    const startBreathBtn = document.getElementById('startBreath');
-    const stopBreathBtn = document.getElementById('stopBreath');
-    const closeBreath = document.getElementById('closeBreath');
+    const toolbox = document.getElementById('toolbox');
+    const reflection = document.getElementById('reflection');
+    const motivation = document.getElementById('motivation');
+    const reasonSelect = document.getElementById('reasonSelect');
 
-    const urgeModal = document.getElementById('urgeModal');
-    const urgeTimerEl = document.getElementById('urgeTimer');
-    const startUrgeBtn = document.getElementById('startUrge');
-    const stopUrgeBtn = document.getElementById('stopUrge');
-    const closeUrge = document.getElementById('closeUrge');
-    const urgeStatus = document.getElementById('urgeStatus');
-
-    const startOverBtn = document.getElementById('backToStart');
-    const iResisted = document.getElementById('iResisted');
-    const iSmoked = document.getElementById('iSmoked');
-    const openCrisis = document.getElementById('openCrisis');
-    const crisisModal = document.getElementById('crisisModal');
-    const closeCrisis = document.getElementById('closeCrisis');
-
-    const randomDistr = document.getElementById('randomDistr');
-    const distractionList = document.getElementById('distractionList');
-
-    const finalNote = document.getElementById('finalNote');
-
-    const quoteBox = document.getElementById('quoteBox');
-
-    // progress UI
-    const openProgress = document.getElementById('openProgress');
-    const viewLogsBtn = document.getElementById('viewLogs');
-    const progressModal = document.getElementById('progressModal');
-    const closeProgress = document.getElementById('closeProgress');
-    const logTableBody = document.querySelector('#logTable tbody');
-    const dashResisted = document.getElementById('dashResisted');
-    const dashGaveIn = document.getElementById('dashGaveIn');
-    const dashStreak = document.getElementById('dashStreak');
-
-    const summaryResisted = document.getElementById('summaryResisted');
-    const summaryGaveIn = document.getElementById('summaryGaveIn');
-    const summaryStreak = document.getElementById('summaryStreak');
-
-    const currentStreakEl = document.getElementById('currentStreak');
-    const resistCountEl = document.getElementById('resistCount');
-
-    const exportLogsBtn = document.getElementById('exportLogs');
-    const clearLogsBtn = document.getElementById('clearLogs');
-
-    /* -------------------------
-       Session state
-    --------------------------*/
-    let session = {
-      feeling: null,
-      smokingNow: null,
-      walkDistance: null,
-      intensity: 0,
-      reason: null,
-      startedAt: null
-    };
-
-    /* -------------------------
-       Utilities
-    --------------------------*/
-    function humanTime(ts){
-      const d = new Date(ts);
-      return d.toLocaleString();
-    }
-
-    function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-    // compute intensity 0..100 from inputs
-    function computeIntensity(feeling, smokingNow, walk){
-      // base by feeling
-      let val = 10;
-      if(feeling === 'calm') val = 5;
-      if(feeling === 'some_urge') val = 40;
-      if(feeling === 'strong_urge') val = 70;
-      if(feeling === 'very_strong') val = 95;
-      // if they would smoke now, bump
-      if(smokingNow === 'yes') val += 10;
-      // if distance is small (0 or 50) bump; if -1 lower
-      if(walk === '0' || walk === '50') val += 10;
-      if(walk === '100') val += 6;
-      if(walk === '500') val += 3;
-      if(walk === '-1') val = Math.min(val, 12);
-      if(walk === 'any') val = Math.max(val, 80);
-      val = Math.max(0, Math.min(100, val));
-      return val;
-    }
-
-    function showStep2(){
-      step1.classList.add('hidden');
-      step2.classList.remove('hidden');
-    }
-
-    function showStep1(){
-      step1.classList.remove('hidden');
-      step2.classList.add('hidden');
-    }
-
-    function setMeter(value){
-      meterFill.style.width = value + '%';
-    }
-
-    function renderQuote(){
-      quoteBox.textContent = rand(quotes);
-    }
-
-    function renderSummary(){
-      const log = loadLog();
-      let resisted = 0, gavein = 0;
-      let streak = 0, maxStreak = 0;
-      // compute resisted/gavein and streak (consecutive resisted from newest)
-      for(const e of log){
-        if(e.outcome === 'resisted') resisted++;
-        if(e.outcome === 'smoked') gavein++;
-      }
-      // streak: count from newest entries until first smoked
-      for(const e of log){
-        if(e.outcome === 'resisted') streak++;
-        else break;
-      }
-      summaryResisted.textContent = resisted;
-      summaryGaveIn.textContent = gavein;
-      summaryStreak.textContent = streak;
-
-      // also set sidebar numbers
-      document.getElementById('summaryResisted').textContent = resisted;
-      document.getElementById('summaryGaveIn').textContent = gavein;
-      document.getElementById('summaryStreak').textContent = streak;
-
-      // dashboard numbers
-      dashResisted.textContent = resisted;
-      dashGaveIn.textContent = gavein;
-      dashStreak.textContent = streak;
-
-      // current small UI
-      currentStreakEl.textContent = streak;
-      resistCountEl.textContent = resisted + ' resisted';
-    }
-
-    /* -------------------------
-       Form handling
-    --------------------------*/
-    form.addEventListener('submit', (ev) => {
-      ev.preventDefault();
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
       const feeling = document.getElementById('feelingSelect').value;
       const smokingNow = document.querySelector('input[name="smokingNow"]:checked')?.value;
       const walkDistance = document.getElementById('walkDistance').value;
 
-      session = {
-        feeling, smokingNow, walkDistance,
-        intensity: computeIntensity(feeling, smokingNow, walkDistance),
-        reason: null,
-        startedAt: Date.now()
-      };
+      step1.classList.add('hidden');
+      step2.classList.remove('hidden');
+      toolbox.innerHTML = ''; reflection.innerHTML = ''; motivation.innerHTML = '';
+      toolbox.classList.add('hidden'); reflection.classList.add('hidden');
+      motivation.classList.add('hidden');
 
-      // Set meter and UI
-      setMeter(session.intensity);
-      renderQuote();
-      showStep2();
+      if (walkDistance === '-1' && smokingNow === 'no') {
+        feedback.innerHTML = `<p class="success">💪 Excellent! You’re in full control — keep reinforcing this strength.</p>`;
+        reflection.innerHTML = `<div class="reflection"><strong>Tip:</strong> Take a moment to appreciate this calm. Each urge you resist rewires your brain toward freedom.</div>`;
+        reflection.classList.remove('hidden');
+        motivation.innerHTML = `<div class="quote">“The craving fades, but your strength stays.”</div>`;
+        motivation.classList.remove('hidden');
+        return;
+      }
 
-      // Primary action text varies by intensity
-      if(session.walkDistance === '-1' || (session.smokingNow === 'no' && session.walkDistance === '-1')){
-        primaryAction.innerHTML = `<strong style="color:${getComputedStyle(document.documentElement).getPropertyValue('--success')}">You're showing strong resistance.</strong> Great job — keep your cues visible and use the plan that keeps you smoke-free.`;
-      } else if(session.intensity >= 80){
-        primaryAction.innerHTML = `<strong style="color:var(--danger)">High urge</strong> — use the Craving Toolbox now: guided breathing, urge-surfing, or a short walk. Delay 10 minutes and check again.`;
-      } else if(session.intensity >= 50){
-        primaryAction.innerHTML = `Moderate urge — try a quick breathing round or a distraction for 5 minutes. Label the urge and note its cause.`;
+      if (feeling === 'strong_urge' || feeling === 'very_strong' || smokingNow === 'yes') {
+        feedback.innerHTML = `<p><strong>Craving detected:</strong> Your mind is signaling an urge. Let’s manage it actively.</p>`;
+        rationalizationPrompt.classList.remove('hidden');
+        toolbox.innerHTML = `<div class="toolbox"><h3>Craving Management Toolbox</h3>
+          <ul>
+            <li><strong>Urge Surfing:</strong> Notice the craving rise and fall without reacting — like watching a wave.</li>
+            <li><strong>Breathing Reset:</strong> Inhale 4s, hold 2s, exhale 6s — repeat for 1 minute.</li>
+            <li><strong>Distraction:</strong> Get water, walk, or text someone — change your environment.</li>
+          </ul></div>`;
+        toolbox.classList.remove('hidden');
+        motivation.innerHTML = `<div class="quote">“This feeling will pass. Freedom grows each time you ride the wave.”</div>`;
+        motivation.classList.remove('hidden');
+      } else if (feeling === 'some_urge') {
+        feedback.innerHTML = `<p>You feel some pull, but it’s manageable. Let’s strengthen awareness.</p>`;
+        reflection.innerHTML = `<div class="reflection"><h3>Mindful Check-In</h3>
+          <p>Ask yourself: What will smoking actually change right now?</p>
+          <p>Breathe in calm — exhale the urge.</p></div>`;
+        reflection.classList.remove('hidden');
+        motivation.innerHTML = `<div class="quote">“Small victories build big freedom.”</div>`;
+        motivation.classList.remove('hidden');
       } else {
-        primaryAction.innerHTML = `Low urge — maintain your plan and use a small positive reward for resisting.`;
+        feedback.innerHTML = `<p class="success">You’re calm and in control. Stay grounded and aware.</p>`;
+        motivation.innerHTML = `<div class="quote">“Every smoke-free moment is a win.”</div>`;
+        motivation.classList.remove('hidden');
       }
-
-      // reset explanation
-      reasonSelect.value = '';
-      explanation.classList.add('hidden');
-      explanation.innerHTML = '';
-
-      finalNote.classList.add('hidden');
     });
 
-    /* -------------------------
-       Rationalization explanations
-    --------------------------*/
-    reasonSelect.addEventListener('change', ()=>{
-      const k = reasonSelect.value;
-      if(!k){ explanation.classList.add('hidden'); explanation.innerHTML=''; return; }
-      const data = explanations[k];
-      explanation.innerHTML = `<h4 style="margin:4px 0">${data.title}</h4>${data.text}`;
+    reasonSelect.addEventListener('change', () => {
+      const reason = reasonSelect.value;
+      if (!reason) {
+        explanation.classList.add('hidden');
+        explanation.innerHTML = '';
+        return;
+      }
+      explanation.innerHTML = explanations[reason] || '';
       explanation.classList.remove('hidden');
-      session.reason = k;
     });
-
-    /* -------------------------
-       Breathing: visual guided breathing
-    --------------------------*/
-    let breathInterval = null;
-    let breathSeconds = 120; // total seconds for 2-minute session
-    let breathCycleIndex = 0;
-    // cycle pattern: inhale 4, hold 2, exhale 6 -> 12s per cycle
-    const cyclePattern = [
-      {phase:'inhale', seconds:4},
-      {phase:'hold', seconds:2},
-      {phase:'exhale', seconds:6}
-    ];
-
-    function startBreathing(){
-      if(breathInterval) return;
-      breathStatus.textContent = 'Breathing...';
-      breathModal.classList.remove('hidden');
-      breathSeconds = 120;
-      breathCycleIndex = 0;
-      // start cycle
-      let phaseIdx = 0;
-      let phaseRemain = cyclePattern[phaseIdx].seconds;
-      breathCircle.style.transform = 'scale(1)';
-      breathCircle.textContent = phaseRemain;
-      breathInstruction.textContent = `${cyclePattern[phaseIdx].phase.toUpperCase()} • ${cyclePattern[phaseIdx].seconds}s`;
-      breathInterval = setInterval(()=>{
-        breathSeconds--;
-        phaseRemain--;
-        breathCircle.textContent = phaseRemain;
-        // visual expand on inhale, shrink on exhale
-        if(cyclePattern[phaseIdx].phase === 'inhale'){
-          breathCircle.style.transform = `scale(${1 + (cyclePattern[phaseIdx].seconds-phaseRemain)/cyclePattern[phaseIdx].seconds * 0.45})`;
-        } else if(cyclePattern[phaseIdx].phase === 'exhale'){
-          breathCircle.style.transform = `scale(${1 - (cyclePattern[phaseIdx].seconds-phaseRemain)/cyclePattern[phaseIdx].seconds * 0.45})`;
-        } else {
-          breathCircle.style.transform = 'scale(1.2)';
-        }
-        if(phaseRemain <= 0){
-          phaseIdx = (phaseIdx + 1) % cyclePattern.length;
-          phaseRemain = cyclePattern[phaseIdx].seconds;
-          breathInstruction.textContent = `${cyclePattern[phaseIdx].phase.toUpperCase()} • ${cyclePattern[phaseIdx].seconds}s`;
-        }
-        if(breathSeconds <= 0){
-          stopBreathing();
-          finalNote.innerHTML = `<strong style="color:var(--success)">Nice work — breathing complete.</strong> How do you feel now?`;
-          finalNote.classList.remove('hidden');
-        }
-      }, 1000);
-    }
-
-    function stopBreathing(){
-      if(breathInterval){ clearInterval(breathInterval); breathInterval = null; }
-      breathModal.classList.add('hidden');
-      breathStatus.textContent = 'Ready';
-      breathCircle.style.transform = 'scale(1)';
-    }
-
-    startBreathBtn.addEventListener('click', startBreathing);
-    stopBreathBtn.addEventListener('click', stopBreathing);
-    closeBreath.addEventListener('click', stopBreathing);
-
-    /* -------------------------
-       Urge surfing timer
-    --------------------------*/
-    let urgeInterval = null;
-    let urgeSeconds = 180;
-    function startUrge(){
-      if(urgeInterval) return;
-      urgeStatus.textContent = 'In progress...';
-      urgeModal.classList.remove('hidden');
-      urgeSeconds = 180;
-      updateUrgeTimer();
-      urgeInterval = setInterval(()=>{
-        urgeSeconds--;
-        updateUrgeTimer();
-        if(urgeSeconds <= 0){
-          stopUrge();
-          finalNote.innerHTML = `<strong style="color:var(--success)">Urge-surfing done.</strong> Notice how the intensity changed.`;
-          finalNote.classList.remove('hidden');
-        }
-      }, 1000);
-    }
-
-    function updateUrgeTimer(){
-      const mm = Math.floor(urgeSeconds/60).toString().padStart(2,'0');
-      const ss = (urgeSeconds%60).toString().padStart(2,'0');
-      urgeTimerEl.textContent = `${mm}:${ss}`;
-    }
-
-    function stopUrge(){
-      if(urgeInterval){ clearInterval(urgeInterval); urgeInterval = null; }
-      urgeModal.classList.add('hidden');
-      urgeStatus.textContent = 'Ready';
-    }
-
-    startUrgeBtn.addEventListener('click', startUrge);
-    stopUrgeBtn.addEventListener('click', stopUrge);
-    closeUrge.addEventListener('click', stopUrge);
-
-    /* -------------------------
-       Crisis Mode
-    --------------------------*/
-    openCrisis.addEventListener('click', ()=> crisisModal.classList.remove('hidden'));
-    closeCrisis.addEventListener('click', ()=> crisisModal.classList.add('hidden'));
-
-    /* -------------------------
-       Distractions
-    --------------------------*/
-    randomDistr.addEventListener('click', ()=>{
-      const items = Array.from(distractionList.querySelectorAll('li')).map(li=>li.textContent);
-      alert('Do this now: ' + rand(items));
-    });
-
-    /* -------------------------
-       Final actions: resisted / smoked / start over
-    --------------------------*/
-    iResisted.addEventListener('click', ()=>{
-      const entry = {
-        time: Date.now(),
-        feeling: session.feeling || 'unknown',
-        walk: session.walkDistance || '',
-        reason: session.reason || '',
-        intensity: session.intensity || 0,
-        outcome: 'resisted'
-      };
-      addEntry(entry);
-      finalNote.innerHTML = `<strong style="color:var(--success)">Recorded:</strong> You resisted this urge — well done.`;
-      finalNote.classList.remove('hidden');
-      showStep1();
-      renderSummary();
-    });
-
-    iSmoked.addEventListener('click', ()=>{
-      const entry = {
-        time: Date.now(),
-        feeling: session.feeling || 'unknown',
-        walk: session.walkDistance || '',
-        reason: session.reason || '',
-        intensity: session.intensity || 0,
-        outcome: 'smoked'
-      };
-      addEntry(entry);
-      finalNote.innerHTML = `<strong style="color:var(--danger)">Recorded:</strong> You smoked — note what triggered it and one small plan to reduce the next time.`;
-      finalNote.classList.remove('hidden');
-      showStep1();
-      renderSummary();
-    });
-
-    startOverBtn.addEventListener('click', ()=> {
-      showStep1();
-      finalNote.classList.add('hidden');
-    });
-
-    /* -------------------------
-       Progress modal rendering
-    --------------------------*/
-    function openProgressModal(){
-      const log = loadLog();
-      // build rows (limit to 50)
-      logTableBody.innerHTML = '';
-      for(let i=0;i<Math.min(log.length,50);i++){
-        const e = log[i];
-        const tr = document.createElement('tr');
-        const ttime = document.createElement('td'); ttime.textContent = new Date(e.time).toLocaleString();
-        const tfeel = document.createElement('td'); tfeel.textContent = e.feeling;
-        const treason = document.createElement('td'); treason.textContent = e.reason || '';
-        const tout = document.createElement('td'); tout.textContent = e.outcome;
-        if(e.outcome === 'resisted') tout.style.color = 'var(--success)';
-        if(e.outcome === 'smoked') tout.style.color = 'var(--danger)';
-        tr.appendChild(ttime); tr.appendChild(tfeel); tr.appendChild(treason); tr.appendChild(tout);
-        logTableBody.appendChild(tr);
-      }
-      progressModal.classList.remove('hidden');
-    }
-
-    openProgress.addEventListener('click', openProgressModal);
-    viewLogsBtn.addEventListener('click', openProgressModal);
-    closeProgress.addEventListener('click', ()=> progressModal.classList.add('hidden'));
-
-    /* -------------------------
-       Export / Clear
-    --------------------------*/
-    exportLogsBtn.addEventListener('click', ()=>{
-      const log = loadLog();
-      if(!log.length){ alert('No logs to export.'); return; }
-      const header = ['time', 'feeling', 'walk', 'reason', 'intensity', 'outcome'];
-      const csv = [header.join(',')].concat(log.map(e => [
-        `"${new Date(e.time).toISOString()}"`,
-        `"${(e.feeling||'')}"`,
-        `"${(e.walk||'')}"`,
-        `"${(e.reason||'')}"`,
-        `${e.intensity||0}`,
-        `"${e.outcome||''}"`
-      ].join(','))).join('\n');
-      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'craving_log.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-
-    clearLogsBtn.addEventListener('click', ()=>{
-      if(confirm('Clear all saved logs? This cannot be undone.')) {
-        saveLog([]);
-        renderSummary();
-        alert('Logs cleared.');
-      }
-    });
-
-    /* -------------------------
-       Init
-    --------------------------*/
-    renderQuote();
-    renderSummary();
-    setMeter(0);
-
-    // accessibility: close modals on ESC
-    window.addEventListener('keydown', (e)=> {
-      if(e.key === 'Escape'){
-        breathModal.classList.add('hidden');
-        urgeModal.classList.add('hidden');
-        crisisModal.classList.add('hidden');
-        progressModal.classList.add('hidden');
-      }
-    });
-
-    // small helpful tip: when leaving step2, reset modals/intervals
-    function cleanupActiveTools(){
-      stopBreathing();
-      stopUrge();
-    }
-    // when modal closed, ensure intervals cleared
-    progressModal.addEventListener('click', (ev)=> {
-      if(ev.target === progressModal) progressModal.classList.add('hidden');
-    });
-
-    // ensure when user reopens progress, numbers are fresh
-    document.getElementById('viewLogs').addEventListener('click', ()=> {
-      renderSummary();
-    });
-
-    // ensure log summary updates regularly
-    setInterval(renderSummary, 5000);
   </script>
 </body>
 </html>
