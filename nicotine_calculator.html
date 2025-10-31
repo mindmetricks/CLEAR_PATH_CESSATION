@@ -14,7 +14,7 @@
             --light-color: #f6f4f5;
             --dark-color: #666;
         }
-        
+
         body {
             font-family: 'Nunito', sans-serif;
             background-color: var(--light-color);
@@ -23,14 +23,14 @@
             margin: 0;
             padding: 0;
         }
-        
+
         header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
             padding: 1.5rem 0;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -39,14 +39,14 @@
             margin: 0 auto;
             padding: 0 20px;
         }
-        
+
         .logo {
             font-size: 2rem;
             font-weight: 700;
             color: white;
             text-decoration: none;
         }
-        
+
         .container {
             max-width: 600px;
             margin: 50px auto;
@@ -55,19 +55,19 @@
             border-radius: 12px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         }
-        
+
         h1 {
             color: var(--primary-color);
             text-align: center;
             margin-bottom: 30px;
         }
-        
+
         label {
             display: block;
             margin-top: 15px;
             font-weight: 600;
         }
-        
+
         input, select {
             width: 100%;
             padding: 12px;
@@ -78,7 +78,7 @@
             font-family: 'Nunito', sans-serif;
             font-size: 1rem;
         }
-        
+
         button {
             background-color: var(--primary-color);
             color: white;
@@ -93,11 +93,11 @@
             margin-top: 30px;
             transition: background-color 0.3s;
         }
-        
+
         button:hover {
             background-color: var(--secondary-color);
         }
-        
+
         .result {
             margin-top: 30px;
             padding: 20px;
@@ -109,7 +109,7 @@
             color: var(--secondary-color);
             display: none;
         }
-        
+
         .back-link {
             display: block;
             text-align: center;
@@ -117,7 +117,7 @@
             color: var(--primary-color);
             text-decoration: none;
         }
-        
+
         .back-link:hover {
             text-decoration: underline;
         }
@@ -153,75 +153,80 @@
 
         <label for="inhalationDepth">Inhalation Depth:</label>
         <select id="inhalationDepth">
-            <option value="0.05">Shallow </option>
-            <option value="0.1" selected>Normal </option>
-            <option value="0.15">Deep </option>
+            <option value="0.05">Shallow</option>
+            <option value="0.1" selected>Normal</option>
+            <option value="0.15">Deep</option>
+        </select>
+
+        <label for="metabolicRate">Nicotine Metabolic Rate:</label>
+        <select id="metabolicRate">
+            <option value="4">Slow</option>
+            <option value="2" selected>Normal</option>
+            <option value="1">Fast</option>
         </select>
 
         <button onclick="calculateNicotineAbsorption()">Calculate</button>
 
         <div class="result" id="resultArea"></div>
-        
         <a href="index.html" class="back-link">Back to Home</a>
     </div>
 
-
-    
     <script>
         function calculateNicotineAbsorption() {
             const cigarettes = parseFloat(document.getElementById('cigarettes').value);
             const nicotineContent = parseFloat(document.getElementById('nicotineContent').value);
             const inhalationDepth = parseFloat(document.getElementById('inhalationDepth').value);
-    
+            const metabolicRate = parseFloat(document.getElementById('metabolicRate').value);
+
             if (isNaN(cigarettes) || isNaN(nicotineContent) || cigarettes <= 0 || nicotineContent <= 0) {
                 alert("Please enter valid positive numbers for cigarettes and nicotine content.");
                 return;
             }
-    
+
             const BLOOD_VOLUME = 6000; // mL
-            const HALF_LIFE = 2; // hours
+            const HALF_LIFE = metabolicRate; // hours based on user selection
             const ELIMINATION_CONSTANT = Math.LN2 / (HALF_LIFE * 60); // per-minute decay
             const TOTAL_DURATION = 16 * 60; // 16 hours in minutes
-    
+
             const INTERVAL = Math.floor(TOTAL_DURATION / cigarettes);
             let bloodNicotine = 0;
             let nicotineSum = 0;
             let nicotineSamples = 0;
             let preCigaretteNicotineSum = 0;
             let preCigaretteCount = 0;
-    
+
             const NICOTINE_ABSORBED_PER_CIG = (nicotineContent * inhalationDepth * 1000000) / (BLOOD_VOLUME * 10);
-    
+
             for (let i = 0; i < cigarettes; i++) {
                 preCigaretteNicotineSum += bloodNicotine;
                 preCigaretteCount++;
                 bloodNicotine += NICOTINE_ABSORBED_PER_CIG;
-    
+
                 for (let j = 0; j < INTERVAL; j++) {
                     nicotineSum += bloodNicotine;
                     nicotineSamples++;
                     bloodNicotine *= Math.exp(-ELIMINATION_CONSTANT);
                 }
             }
-    
+
             const remainingTime = TOTAL_DURATION - (cigarettes * INTERVAL);
             for (let j = 0; j < remainingTime; j++) {
                 nicotineSum += bloodNicotine;
                 nicotineSamples++;
                 bloodNicotine *= Math.exp(-ELIMINATION_CONSTANT);
             }
-    
+
             const meanNicotineLevel = nicotineSum / nicotineSamples;
             const thresholdNicotineLevel = preCigaretteNicotineSum / (preCigaretteCount - 1);
             const dailyAbsorbed = cigarettes * nicotineContent * inhalationDepth;
-    
+
             // Helper: calculate ±10% range
             function range(value, decimals = 1) {
                 const low = (value * 0.9).toFixed(decimals);
                 const high = (value * 1.1).toFixed(decimals);
                 return `${low} – ${high}`;
             }
-    
+
             // Display results
             const resultArea = document.getElementById('resultArea');
             resultArea.style.display = 'block';
@@ -241,7 +246,5 @@
             `;
         }
     </script>
-
 </body>
 </html>
-
