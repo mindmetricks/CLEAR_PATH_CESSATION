@@ -236,7 +236,10 @@
                 let U0 = Upregulation;
                 let Gum = week.gum
                 let Patch = week.patch
-                let half_life = 2 * 3600;
+                let half_life;
+                if (susceptibility === 'low') half_life = 1 * 3600;     // Fast metabolizer
+                else if (susceptibility === 'medium') half_life = 2 * 3600; // Normal
+                else if (susceptibility === 'high') half_life = 4 * 3600;   // Slow
                 let release_duration = 24 * 3600;
                 let elimination_rate = Math.log(2) / half_life;
                 let absorption_rate = Patch / release_duration;
@@ -367,4 +370,5 @@
                 
 </body>
 </html>
+
 
