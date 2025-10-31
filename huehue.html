@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLEAR-PATH: Smoking Cessation Program</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #2c5aa0;
+            --secondary-blue: #1e3a66;
+            --accent-blue: #4a7ec4;
+            --light-blue: #e8f0f8;
+            --bright-accent: #ff8c42;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --text: #1f2937;
+            --light-bg: #f8fafc;
+            --card-shadow: 0 8px 24px rgba(44, 90, 160, 0.12);
+            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e8f0f8 100%);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ========== HEADER ========== */
+        header {
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+            padding: 1.25rem 0;
+            padding-bottom: 1rem; /* or margin-bottom */
+            box-shadow: var(--card-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            color: var(--bright-accent);
+            text-shadow: 0 0 8px rgba(255, 140, 66, 0.3);
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(20deg) scale(1.1);
+        }
+
+        /* ========== HERO SLIDER ========== */
+        .hero-slider {
+            position: relative;
+            width: calc(100% - 4rem);
+            margin: 0 2rem 4rem 2rem; 
+            height: 520px;
+            overflow: hidden;
+            border-radius: 20px 20px 20px 20px;
+            box-shadow: 0 15px 40px rgba(44, 90, 160, 0.2);
+        }
+
+        .slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            display: flex;
+            align-items: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .slide-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.5) saturate(1.1);
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            padding: 4rem;
+            color: white;
+            animation: slideInContent 0.8s ease-out;
+        }
+
+        .slide:nth-child(1) .slide-content {
+            margin-left: 0;
+        }
+
+        .slide:nth-child(2) .slide-content {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .slide:nth-child(3) .slide-content {
+            margin: auto;
+            text-align: center;
+        }
+
+        @keyframes slideInContent {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .slide p {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            line-height: 1.8;
+        }
+
+        .slide-btn {
+            display: inline-block;
+            padding: 0.85rem 2.2rem;
+            background: var(--bright-accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 140, 66, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .slide-btn:hover {
+            background: #ff7a1f;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
+        }
+
+        /* Slider Dots */
+        .slider-dots {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 20;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid white;
+        }
+
+        .dot.active {
+            background: var(--bright-accent);
+            transform: scale(1.3);
+            border-color: var(--bright-accent);
+        }
+
+        /* ========== INTRO SECTION ========== */
+        .intro-section {
+            text-align: center;
+            margin: 4rem 0;
+            padding: 0;
+        }
+
+        .intro-section h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .intro-section p {
+            font-size: 1.2rem;
+            color: var(--text);
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.85;
+        }
+
+        /* ========== ASYMMETRIC TILES GRID ========== */
+        .tiles-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 2rem;
+            margin: 4rem 0;
+            grid-auto-rows: auto;
+        }
+
+        /* Asymmetric Layout */
+        .tile:nth-child(1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .tile:nth-child(2) {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .tile:nth-child(3) {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .tile:nth-child(4) {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .tile:nth-child(5) {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .tile {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            animation: tileSlideIn 0.6s ease-out forwards;
+            opacity: 0;
+            border: 1px solid rgba(44, 90, 160, 0.08);
+        }
+
+        @keyframes tileSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tile:nth-child(1) { animation-delay: 0.1s; }
+        .tile:nth-child(2) { animation-delay: 0.2s; }
+        .tile:nth-child(3) { animation-delay: 0.3s; }
+        .tile:nth-child(4) { animation-delay: 0.4s; }
+        .tile:nth-child(5) { animation-delay: 0.5s; }
+
+        .tile:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(44, 90, 160, 0.2);
+            border-color: var(--accent-blue);
+        }
+
+        .tile-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white;
+            padding: 2.2rem;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tile-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .tile-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            z-index: 1;
+        }
+
+        .tile-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            z-index: 1;
+        }
+
+        .tile-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            z-index: 1;
+        }
+
+        .tile-body {
+            padding: 2rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tile-body p {
+            color: var(--text);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+            opacity: 0.8;
+            line-height: 1.7;
+        }
+
+        .tile-btn {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            align-self: flex-start;
+            margin-top: auto;
+        }
+
+        .tile-btn:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3);
+        }
+
+        /* ========== MODAL ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, white 0%, #f8fafc 100%);
+            margin: 5% auto;
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 700px;
+            box-shadow: 0 20px 60px rgba(44, 90, 160, 0.3);
+            animation: slideUp 0.4s ease-out;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .close {
+            color: var(--primary-blue);
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--bright-accent);
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .modal-body {
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .modal-body p {
+            margin-bottom: 1rem;
+        }
+
+        .modal-body ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-body li {
+            margin-bottom: 0.6rem;
+            opacity: 0.85;
+        }
+
+        .modal-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .modal-links a {
+            padding: 0.85rem 1.2rem;
+            background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .modal-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(44, 90, 160, 0.3);
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+            color: white;
+            text-align: center;
+            padding: 2.5rem 0;
+            margin-top: 6rem;
+        }
+
+        /* ========== DARK MODE ========== */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        body.dark-mode .tile {
+            background: #2b3e50;
+            border-color: rgba(74, 126, 196, 0.2);
+        }
+
+        body.dark-mode .modal-content {
+            background: linear-gradient(135deg, #2b3e50 0%, #1a1a2e 100%);
+        }
+
+        body.dark-mode .modal-header,
+        body.dark-mode .modal-body,
+        body.dark-mode .tile-body p {
+            color: #e8f0f8;
+        }
+
+        body.dark-mode .intro-section h1,
+        body.dark-mode .intro-section p {
+            color: #e8f0f8;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+           .hero-slider {
+           margin: 0 0.5rem 2rem 0.5rem;
+           width: calc(100% - 1rem);
+            }
+        }
+
+
+        @media (max-width: 1024px) {
+            .tiles-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .tile:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+            .tile:nth-child(2) { grid-column: span 2; }
+            .tile:nth-child(3) { grid-column: span 2; }
+            .tile:nth-child(4) { grid-column: span 4; }
+            .tile:nth-child(5) { grid-column: span 4; }
+        }
+
+        @media (max-width: 768px) {
+            .tiles-container {
+                grid-template-columns: 1fr;
+            }
+
+            .tile {
+                grid-column: span 1 !important;
+                grid-row: auto !important;
+            }
+
+            .slide h2 {
+                font-size: 2rem;
+            }
+
+            .intro-section h1 {
+                font-size: 2rem;
+            }
+
+            .slider-dots {
+                bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== HEADER ========== -->
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo">🚭 CLEAR-PATH</a>
+            <div class="nav-links">
+                <a href="https://www.mermaidchart.com/raw/1a2c2b6e-4479-40db-a8fb-af2ce6ed3a94?theme=light&version=v0.1&format=svg" target="_blank" class="nav-link">
+                        <i class="fas fa-link"></i> Flowchart to Program
+                </a>
+                <a href="#" class="nav-link">📚 Resources</a>
+                <button class="theme-toggle" onclick="toggleDarkMode()">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========== HERO SLIDER ========== -->
+    <div class="hero-slider">
+        <div class="slides-container">
+            <!-- Slide 1 -->
+            <div class="slide active">
+                <img src="IMAGES3.png" alt="Success tracking" class="slide-bg">
+                <div class="slide-content">
+                    <h2>Assess. Understand. Transform.</h2>
+                    <p>Begin your personalized journey toward smoking cessation using evidence-based tools and procedure. Gain a clear understanding of the foundations and rationale behind our cessation program. </p>
+                    <button class="slide-btn" onclick="scrollToTiles()"> <a href="https://www.mermaidchart.com/raw/1a2c2b6e-4479-40db-a8fb-af2ce6ed3a94?theme=light&version=v0.1&format=svg" class="slide-btn">Let's Get Started →</a> </button>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="slide">
+                <img src="IMAGES2.png" alt="Success tracking" class="slide-bg">
+                <div class="slide-content">
+                    <h2>Science-Backed Tools</h2>
+                    <p>Explore validated instruments that identify the physiological, psychological, and genetic root causes of nicotine dependence, helping to create a detailed smoker profile for a targeted cessation program.</p>
+                    <button class="slide-btn" onclick="scrollToTiles()">View Tools →</button>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="slide">
+                <img src="IMAGES.png" alt="Success tracking" class="slide-bg">
+                <div class="slide-content">
+                    <h2>Track Progress, Stay Motivated.</h2>
+                    <p>Track your withdrawal, dependence recovery, and personal challenges, and strengthen your progress with our structured follow-up, feedback tools, and web-based companion.</p>
+                    <button class="slide-btn" onclick="scrollToTiles()">Start Program →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="slider-dots">
+            <span class="dot active" onclick="currentSlide(0)"></span>
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+        </div>
+    </div>
+
+    <!-- ========== INTRO ========== -->
+    <main class="container">
+        <section class="intro-section">
+            <h1>Your Complete Cessation Companion</h1>
+            <p>Comprehensive assessments, personalized tools, and continuous support to help you quit smoking successfully.</p>
+        </section>
+
+        <!-- ========== TILES ========== -->
+        <section class="tiles-container" id="tilesSection">
+            <!-- Tile 1: Understand Smoking -->
+            <div class="tile" onclick="openModal('behaviorModal')">
+                <div class="tile-header">
+                    <div class="tile-icon">🔍</div>
+                    <h2>Understand Smoking Behavior</h2>
+                    <p>Live Free Again, Unhook the Mind</p>
+                </div>
+
+
+
+<div class="tile-body">
+    <p>This book explores smoking behavior with relevance for clinicians, smokers, and researchers. It synthesizes research from receptor-level mechanisms to behavioral manifestations across system, circuit, and cognitive processes, integrating diverse perspectives and approaches. It also introduces new insights and computational models of smoking behavior, offering a clinically informed perspective. Readers will gain a deep understanding of the multifaceted and complex nature of smoking behavior.</p>
+    
+    <!-- Clickable Image -->
+    <a href="https://mindmetricks.github.io/CLEAR_PATH_CESSATION/" target="_blank" rel="noopener noreferrer">
+        <img src="IMAG.png" alt="CLEAR-PATH" style="width:100%; border-radius: 12px; cursor: pointer;">
+    </a>
+
+    <!-- Link below the image -->
+    <a href="https://mindmetricks.github.io/CLEAR_PATH_CESSATION/" target="_blank" rel="noopener noreferrer" class="tile-btn" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
+        Understand Smoking Inside-Out →
+    </a>
+</div>
+
+
+            </div>
+
+            <!-- Tile 2: Assessment Scales -->
+            <div class="tile" onclick="openModal('scalesModal')">
+                <div class="tile-header">
+                    <div class="tile-icon">📋</div>
+                    <h2>Assessment Scales and Tools</h2>
+                    <p>Understand and characterize the Smoker</p>
+                </div>
+                <div class="tile-body">
+                    <p>Complete validated assessments including the FTND, WSWS, WISDM, MTSS, and OCEAN to measure nicotine dependence, withdrawal, motivation, rationalizations, and personality factors. In addition to these scales, the system integrates computational model–based tools that provide deeper behavioral insights and enhance smoker profiling accuracy. </p>
+                    <button class="tile-btn">Profile the Smoker →</button>
+                </div>
+            </div>
+
+            <!-- Tile 3: Profile & Design -->
+            <div class="tile" onclick="openModal('profilingModal')">
+                <div class="tile-header">
+                    <div class="tile-icon">👤</div>
+                    <h2>Design Cessation Program</h2>
+                    <p>Get personalized plan</p>
+                </div>
+                <div class="tile-body">
+                    <p> Get a personalized first week cessation program based on smoker's comprehensive smoking profile and assessment results.</p>
+                    <button class="tile-btn">Build Cessation Program →</button>
+                </div>
+            </div>
+
+            <!-- Tile 4: Tools & Calculators -->
+            <div class="tile" onclick="openModal('toolsModal')">
+                <div class="tile-header">
+                    <div class="tile-icon">📈</div>
+                    <h2>Weekly Follow-Up</h2>
+                    <p>Weekly Dosage and Withdrawal Follow-Up</p>
+                </div>
+                <div class="tile-body">
+                    <p> Helps clinicians with weekly monitoring and tapering schedules, tracking the progress through the cessation journey. </p>
+                    <button class="tile-btn">Access Tool →</button>
+                </div>
+            </div>
+
+            <!-- Tile 5: Companion App -->
+            <div class="tile" onclick="openModal('companionModal')">
+                <div class="tile-header">
+                    <div class="tile-icon">🤝</div>
+                    <h2>Your Quitting Companion</h2>
+                    <p>Real-time craving management</p>
+                </div>
+                <div class="tile-body">
+                    <p>Access immediate support tools, cognitive reframes, breathing exercises, and a full personal toolkit for anytime support. You can also plan for future risky situations in advance. Set up a schedule to receive check-ins from this tool, or use it instantly whenever you need. </p>
+                    <button class="tile-btn">Open Companion →</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========== MODALS ========== -->
+    <div id="behaviorModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('behaviorModal')">&times;</span>
+            <h2 class="modal-header">🔍 Understand Smoking Behavior</h2>
+            <div class="modal-body">
+                <p>Understanding your smoking behavior is the foundation of successful cessation.</p>
+                <ul>
+
+<li><strong>Smoking Patterns:</strong> When, where, and why you smoke, including routines and daily situations that reinforce the habit.</li>
+    <li><strong>Triggers:</strong> Emotional, environmental, and physical cues that create the urge to smoke.</li>
+    <li><strong>Dependencies:</strong> How physical addiction, psychological needs, and social factors work together to sustain smoking.</li>
+    <li><strong>Rationalizations:</strong> Thoughts or beliefs that make smoking seem acceptable, necessary, or justified.</li>
+    <li><strong>Personality and Traits:</strong> How individual differences, such as impulsivity or stress sensitivity, influence smoking habits.</li>
+    <li><strong>Cognitive Processes:</strong> How attention, memory, and decision-making affect smoking choices and relapse risk.</li>
+    <li><strong>Social and Environmental Factors:</strong> How peers, family, culture, and surroundings shape smoking behavior.</li>
+    <li><strong>Relapse Dynamics:</strong> Why relapses occur, including common situations, emotions, and thinking patterns involved.</li>
+    <li><strong>Computational Models:</strong> Novel data-based approaches that simulate smoking behavior and can help predict craving, relapse, and treatment outcomes.</li>
+    <li><strong>Biological and Brain Insights:</strong> How receptors, brain circuits, and body systems interact to drive dependence and craving.</li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="scalesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('scalesModal')">&times;</span>
+            <h2 class="modal-header">📋 Assessment Scales</h2>
+            <div class="modal-body">
+                <p>Our validated assessment scales measure different dimensions:</p>
+                <ul>
+                    <li><strong>FTND:</strong> Nicotine dependence severity</li>
+                    <li><strong>WSWS:</strong> Withdrawal symptoms intensity</li>
+                    <li><strong>WISDM:</strong> Smoking motivations (13 domains)</li>
+                    <li><strong>MTSS:</strong> Motivation to quit</li>
+                    <li><strong>OCEAN:</strong> Big Five Personality Traits: measures personality across five dimensions.</li>
+                    <li><strong>GBPS:</strong> Predisposition Scale: assesses biological predispositions.</li>
+                    <li><strong>DNL</strong> Nicotine Calculator: calculate daily nicotine absorption and dip blood nicotine levels.</li>
+                </ul>
+                <div class="modal-links">
+                    <a href="WISD.html">📊 WISDM Scale</a>
+                    <a href="ftnd.html">📊 FTND Scale</a>
+                    <a href="erf.html">📊 WSWS Scale</a>
+                    <a href="mtss.html">📊 MTSS Scale</a>
+                    <a href="ocin.html">📊 OCEAN Scale</a>
+                    <a href="gbps.html">📊 Predisposition Scale</a>
+                    <a href="nicotine_calculator.html">🛠️ DNT Tool</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="profilingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('profilingModal')">&times;</span>
+            <h2 class="modal-header">👤 Profile & Design Program</h2>
+            <div class="modal-body">
+                <p>Personalized cessation program including:</p>
+                <ul>
+                    <li>Recommended NRT dosage and tapering</li>
+                    <li>Behavioral strategies for your triggers</li>
+                    <li>Psychological techniques targeting your motivations</li>
+                    <li>Weekly milestones and follow-up plans</li>
+                </ul>
+                <div class="modal-links">
+                    <a href="cessation_program.html">🚀 Start Program Design</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toolsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('toolsModal')">&times;</span>
+            <h2 class="modal-header"> 🔁 Weekly Follow-Up</h2>
+            <div class="modal-body">
+                <p>Monitor the trajectory of the Cessation Program:</p>
+                <ul>
+                    <li><strong>Nicotinic Recovery:</strong> Track the reversal of biological dependence.</li>
+                    <li><strong>Psychological Renewal:</strong> Monitor the fading of associations and potential triggers.</li>
+                    <li><strong>Withdrawal Log:</strong> Keep track of withdrawal symptoms and improvements.</li>
+                    <li><strong>Savings Tracker:</strong> See how much money you’ve saved over time.</li>
+                </ul>
+                <div class="modal-links">
+                    <a href="follow_up.html">📈 Weekly Follow-Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="companionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('companionModal')">&times;</span>
+            <h2 class="modal-header">🤝 Your Personal Quitting Companion</h2>
+            <div class="modal-body">
+                <p>24/7 support system with immediate access to:</p>
+                <ul>
+                    <li>Breathing Exercises for instant relief</li>
+                    <li>Thought Records to challenge cravings</li>
+                    <li>Cognitive Tools and mental games</li>
+                    <li>Mindfulness and meditation</li>
+                    <li>Journaling and time capsule</li>
+                    <li>Relaxation videos and audio guides</li>
+                    <li>Physical exercises for endorphin boost</li>
+                    <li>Scheduling reminders for crisis management</li>
+                </ul>
+                <div class="modal-links">
+                    <a href="smoking-cessation.html" style="background: linear-gradient(135deg, var(--bright-accent), #ff7a1f); color: white;">🚭 Open Companion</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== FOOTER ========== -->
+    <footer>
+        <p>© 2025 CLEAR-PATH Smoking Cessation Program. Designed for your success.</p>
+    </footer>
+
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+
+        // Auto-slide every 6 seconds
+        setInterval(() => {
+            currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+            updateSlide();
+        }, 6000);
+
+        function currentSlide(index) {
+            currentSlideIndex = index;
+            updateSlide();
+        }
+
+        function updateSlide() {
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.add('active');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const toggle = document.querySelector('.theme-toggle');
+            toggle.textContent = document.body.classList.contains('dark-mode') ? '🌙' : '☀️';
+        }
+
+        function scrollToTiles() {
+            document.getElementById('tilesSection').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

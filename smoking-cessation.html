@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Digital Smoking Cessation Companion</title>
+<style>
+:root{
+  --primary:#4a6fa5;
+  --secondary:#166088;
+  --accent:#4fc3f7;
+  --success:#28a745;
+  --warning:#ffc107;
+  --danger:#dc3545;
+  --light:#f8f9fa;
+  --dark:#343a40;
+  --muted:#6c757d;
+  --radius:12px;
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--light);color:var(--dark);
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  line-height:1.6;
+}
+/* --- Outward-moving whirlpool loader --- */
+.loading-overlay {
+  position: fixed;inset: 0;
+  background: radial-gradient(circle at center, #001408 0%, #000 100%);
+  display: flex;align-items: center;justify-content: center;overflow: hidden;
+  z-index: 99999;color: #d6ffe2;font-size: 1.8rem;font-weight: 700;
+  letter-spacing: 1px;text-shadow: 0 0 20px #7aff99, 0 0 40px rgba(127,255,127,0.4);
+}
+.loading-overlay span {position: relative;z-index: 2;animation: pulseText 1.5s ease-in-out infinite;}
+@keyframes pulseText {0%,100% { opacity: 0.7; transform: scale(1); }50% { opacity: 1; transform: scale(1.15); }}
+.loading-overlay::before,.loading-overlay::after {content: "";position: absolute;top: 50%;left: 50%;width: 0;height: 0;border: 2px solid rgba(127,255,127,0.4);border-radius: 50%;transform: translate(-50%, -50%) rotate(0deg);opacity: 0;animation: rippleOut 2s ease-out infinite;}
+.loading-overlay::after {animation-delay: 1s;border-color: rgba(159,212,164,0.6);}
+@keyframes rippleOut {0% {width: 0px;height: 0px;opacity: 0.8;transform: translate(-50%, -50%) rotate(0deg);}70% {opacity: 1;transform: translate(-50%, -50%) rotate(45deg);}100% {width: 900px;height: 900px;opacity: 0;transform: translate(-50%, -50%) rotate(180deg);}}
+.loading-overlay .swirl {position: absolute;width: 100%;height: 100%;background: conic-gradient(from 0deg, rgba(47,111,72,0.4), rgba(0,0,0,0.7), rgba(159,212,164,0.4), rgba(0,0,0,0.7));animation: swirlSpin 6s linear infinite;mix-blend-mode: screen;opacity: 0.3;z-index: 1;}
+@keyframes swirlSpin {from { transform: rotate(0deg); }to { transform: rotate(360deg); }}
+@keyframes fadeOut {to { opacity: 0; visibility: hidden; }}
+
+header{
+  background-image:
+    linear-gradient(to bottom, #0C55FE 0%, transparent 70%), 
+    linear-gradient(to bottom, transparent 20%, #0C55FE 100%);
+  background-blend-mode: screen;
+  color:white;padding:20px;font-weight:700;font-size:1.3rem;
+  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  display:flex;justify-content:space-between;align-items:center;
+}
+header .home-link{
+  text-decoration:none;color:white;font-size:0.9rem;padding:8px 16px;
+  border-radius:var(--radius);background:rgba(255,255,255,0.2);
+  transition:all 0.3s ease;font-weight:600;border:2px solid transparent;
+}
+header .home-link:hover{
+  background:rgba(255,255,255,0.3);border-color:rgba(255,255,255,0.5);
+  transform:translateY(-2px);
+}
+main{
+  position:relative;max-width:1200px;margin:0 auto;min-height:calc(100vh - 80px);
+  display:flex;align-items:center;justify-content:center;padding:40px 20px;overflow:hidden;
+}
+.background-container{
+  position:absolute;top:0;right:0;width:100%;height:100%;z-index:0;
+  pointer-events:none;
+}
+.background-container img{
+  width:100%;height:100%;object-fit:cover;opacity:.3;
+  filter:grayscale(.1) blur(2px);transition: opacity 1.5s ease-in-out;
+  will-change: opacity;
+}
+
+.content-wrapper{
+  position:relative;z-index:10;width:100%;display:flex;align-items:center;justify-content:space-between;gap:40px;
+}
+.circle{
+  width:240px;height:240px;border-radius:50%;
+  background:linear-gradient(145deg,#102c74,#2f6ed2);
+  border:3px solid rgba(5,20,60,0.9);color:#fff;font-size:1.1rem;font-weight:700;
+  display:flex;justify-content:center;align-items:center;text-align:center;
+  cursor:pointer;box-shadow:0 15px 40px rgba(0,0,0,0.3);
+  transition:transform .4s ease,box-shadow .4s ease,filter .3s ease;
+  user-select:none;position:relative;
+}
+.circle:hover{transform:scale(1.08);box-shadow:0 20px 55px rgba(0,0,0,0.35);filter:brightness(1.08);}
+.circle::after{
+  content:"";position:absolute;inset:-12px;border-radius:50%;
+  background:radial-gradient(circle,rgba(10,20,60,0.85)0%,transparent 75%);
+  z-index:-1;filter:blur(16px);
+}
+.circle::before{
+  content:"";position:absolute;top:10%;left:15%;width:70%;height:35%;
+  border-radius:50%;background:rgba(255,255,255,0.2);filter:blur(5px);
+}
+.circle .hint{font-size:.9rem;opacity:.9;margin-top:8px;}
+.circle.pulse{animation:subtlePulse 1.8s infinite ease-in-out;}
+@keyframes subtlePulse{0%{transform:scale(1)}50%{transform:scale(1.03)}100%{transform:scale(1)}}
+
+.options-panel{
+  flex:1;max-width:600px;opacity:0;
+  transform:translateX(50px);
+  transition:transform .6s cubic-bezier(.2,.9,.2,1),opacity .5s ease;
+}
+.options-panel.active{transform:translateX(0);opacity:1;}
+.panel-card{
+  background:white;border-radius:var(--radius);padding:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);margin-bottom:16px;
+  max-height:75vh;overflow-y:auto;
+}
+.panel-card::-webkit-scrollbar{width:8px;}
+.panel-card::-webkit-scrollbar-track{background:#f1f1f1;border-radius:10px;}
+.panel-card::-webkit-scrollbar-thumb{background:#888;border-radius:10px;}
+.panel-card::-webkit-scrollbar-thumb:hover{background:#555;}
+
+.option-card{
+  background:white;border-radius:10px;padding:14px;margin:12px 0;
+  box-shadow:0 6px 20px rgba(0,0,0,0.08);cursor:pointer;
+  transition:transform .2s ease,background .2s ease,color .2s ease;
+  border:2px solid rgba(74,111,165,0.1);
+}
+.option-card:hover{transform:translateY(-3px);background:var(--accent);color:#fff;border-color:var(--accent);}
+.option-card:hover .option-title{color:#fff;}
+.option-card:hover .option-desc{color:rgba(255,255,255,0.9);}
+.option-title{font-weight:700;color:var(--primary);margin-bottom:6px;font-size:1.05rem;}
+.option-desc{font-size:.95rem;color:var(--muted);line-height:1.5;}
+
+.btn{
+  display:inline-block;margin:6px;padding:11px 18px;
+  background:var(--secondary);color:white;border-radius:8px;
+  border:none;cursor:pointer;font-size:.95rem;font-weight:600;
+  transition:all .3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+.btn:hover{background:var(--primary);transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,0.15);}
+.btn.clear{background:transparent;color:var(--secondary);border:2px solid rgba(22,96,136,0.3);}
+.btn.clear:hover{background:rgba(22,96,136,0.05);border-color:var(--secondary);}
+.btn.success{background:var(--success);}
+.btn.success:hover{background:#218838;}
+
+#breathCircle{
+  width:160px;height:160px;margin:20px auto;border-radius:50%;
+  border:8px solid var(--primary);display:flex;justify-content:center;align-items:center;
+  font-size:2rem;font-weight:700;color:var(--primary);
+  transition:transform 4s ease-in-out;background:white;box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+textarea.journal{
+  width:100%;min-height:130px;border-radius:10px;padding:12px;
+  border:2px solid rgba(52,58,64,0.15);resize:vertical;font-size:1rem;
+  font-family:inherit;transition:border-color .3s ease;
+}
+textarea.journal:focus{outline:none;border-color:var(--accent);}
+
+.small{font-size:.92rem;color:var(--muted);line-height:1.5;}
+.card-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+
+.rationalization-table{
+  width:100%;border-collapse:collapse;margin-top:12px;
+}
+.rationalization-table th,.rationalization-table td{
+  padding:10px;text-align:left;border-bottom:1px solid #e0e0e0;
+}
+.rationalization-table th{background:var(--light);font-weight:700;color:var(--primary);}
+
+.alert{
+  padding:12px;border-radius:8px;margin:12px 0;font-size:.95rem;
+}
+.alert.info{background:#d1ecf1;color:#0c5460;border-left:4px solid #17a2b8;}
+.alert.success{background:#d4edda;color:#155724;border-left:4px solid #28a745;}
+.alert.warning{background:#fff3cd;color:#856404;border-left:4px solid #ffc107;}
+
+ul.support-list{
+  list-style:none;padding-left:0;
+}
+ul.support-list li{
+  padding:8px 0;padding-left:24px;position:relative;
+}
+ul.support-list li::before{
+  content:"✓";position:absolute;left:0;color:var(--success);font-weight:700;
+}
+
+@media(max-width:900px){
+  .content-wrapper{flex-direction:column;}
+  .options-panel{max-width:100%;width:100%;}
+  .circle{width:200px;height:200px;}
+  #breathCircle{width:140px;height:140px;}
+}
+
+#background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.3;
+  transition: background-image 1s ease-in-out;
+  z-index: -1;
+}
+
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .circle {
+    width: 180px;
+    height: 180px;
+    font-size: 1rem;
+  }
+  
+  .panel-card {
+    max-height: 60vh;
+    padding: 16px;
+  }
+}
+
+.mindfulness-card {
+  background: var(--light);
+  padding: 20px;
+  border-radius: var(--radius);
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.fade-in {
+  animation: fadeIn 1.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.mindfulness-title {
+  font-weight: 600;
+  margin-bottom: 14px;
+  font-size: 1.2rem;
+}
+
+.mindfulness-visual {
+  position: relative;
+  height: 200px;
+  margin-bottom: 20px;
+  background: radial-gradient(circle at center, rgba(0,150,136,0.05), transparent);
+  overflow: hidden;
+}
+
+.moving-orb {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, rgba(0,150,136,0.6), rgba(0,150,136,0));
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: left 1s ease, top 1s ease;
+}
+
+.breath-instructions {
+  margin-top: 10px;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.mindfulness-prompts {
+  margin-bottom: 20px;
+  line-height: 1.8;
+}
+
+.mindfulness-btn {
+  width: 100%;
+}
+
+
+
+</style>
+</head>
+<body>
+<div class="loading-overlay">
+  <div class="swirl"></div>
+  <span>Loading…</span>
+</div>
+<div id="background"></div>
+<header><div style="width:85px;"></div><div style="flex:1;text-align:center;">🫂 <span style="color:#FFFFFF; font-weight:750;">Your Digital Companion</span>
+</div><a href="index.html" class="home-link">🏠 Home</a></header>
+<main>
+
+
+  <div class="background-container">
+    <!-- <img id="motivationImage" src="" alt="Motivational background"> -->
+  </div>
+
+  <div class="content-wrapper">
+    <div id="mainCircle" class="circle pulse" tabindex="0" role="button" aria-pressed="false">
+      <div style="text-align:center">
+        <div style="font-weight:800;font-size:1.15rem">🧘‍♂️ Take a Pause</div>
+        <div class="hint">Click to check-in</div>
+      </div>
+    </div>
+
+    <div id="optionsPanel" class="options-panel"></div>
+  </div>
+</main>
+
+<script>
+/* ==================== Configuration ==================== */
+const imageList = [
+  "1.gif",
+  "2.gif",
+  "3.gif",
+  "4.gif"
+];
+
+
+/* ==================== Data Store ==================== */
+const panel = document.getElementById("optionsPanel");
+const circle = document.getElementById("mainCircle");
+
+let flowState = {
+  feeling: null,
+  nrtReduced: null,
+  envChanges: null,
+  next24h: null,
+  environment: null,
+  rationalization: null,
+  resolution: null,
+  journalText: null,
+  reminder: null
+};
+
+const rationalizationOptions = [
+  {
+    id: "deserve",
+    label: "I've been stressed; I deserve one",
+    fallacy: "Emotional reasoning",
+    reframe: "You really do deserve relief after stress, but smoking only gives a short, false comfort. What you truly deserve is rest and care that help your body recover, a few minutes of quiet, a stretch, or even deep breathing can do that without setting you back."
+  },
+  {
+    id: "justone",
+    label: "Just one won't hurt",
+    fallacy: "Minimization",
+    reframe: "It feels harmless in the moment, but even one cigarette restarts the craving cycle. That single puff reminds your brain of the old pattern. Remind yourself how far you have come, protecting that progress is worth more than the quick relief of one drag."
+  },
+  {
+    id: "tomorrow",
+    label: "I'll quit again tomorrow",
+    fallacy: "Procrastination trap",
+    reframe: "Cravings love to bargain for more time. But every moment you resist now makes tomorrow easier. You don’t need a perfect restart; you just need one honest choice today. That’s how real change takes root, one decision at a time."
+  },
+  {
+   id: "controlled",
+   label: "I've learned to control it; one slip is fine",
+   fallacy: "Self-deception",
+   reframe: "It can feel like you’re in control after holding out for so long, but self-control works like a muscle, it gets stronger when protected. Each time you resist, your confidence grows; but giving in once can trick your mind into lowering the bar for next time. That ‘one slip’ can quietly restart the cycle. Real control is knowing you don’t need to test it anymore."
+  },
+
+  {
+    id: "others",
+    label: "Everyone else is smoking",
+    fallacy: "Social justification",
+    reframe: "It can feel isolating when others smoke around you, but this is your path, not theirs. Most people who smoke wish they could stop too. By holding your ground, you’re showing what strength looks like, and you may even inspire someone else quietly watching."
+  },
+  {
+    id: "puff",
+    label: "I can handle just a puff",
+    fallacy: "False control",
+    reframe: "The idea of 'just a puff' feels safe, but nicotine doesn’t work that way. Even a tiny amount can wake up the addiction loop. The real strength is in letting the urge pass untouched, proving to yourself that you’re already in control."
+  },
+  {
+    id: "focus",
+    label: "It helps me focus",
+    fallacy: "Dependency myth",
+    reframe: "Nicotine tricks your brain by first creating tension, then briefly easing it. That pattern feels like focus, but it’s really withdrawal relief. True concentration grows from calm breathing, rest, and consistency, the kind of focus that stays steady without costing your health."
+  },
+  {
+    id: "failed",
+    label: "I've already failed so many times",
+    fallacy: "All-or-nothing thinking",
+    reframe: "Relapse isn’t failure, it’s feedback. Every attempt teaches you something new about what helps and what doesn’t. The fact that you’re reflecting on it means you haven’t given up. Persistence, not perfection, is what builds freedom over time."
+  },
+  {
+    id: "dontcare",
+    label: "I don't care anymore",
+    fallacy: "Emotional exhaustion",
+    reframe: "That thought comes from fatigue, not truth. When you’re emotionally drained, your brain tries to escape through something familiar. Take a pause, breathe, drink some water, or talk to someone. The part of you that truly cares is still here, it just needs a moment to breathe."
+  },
+  {
+    id: "reward",
+    label: "It's my reward for working hard",
+    fallacy: "Reward rationalization",
+    reframe: "You’ve earned a reward, but it should leave you feeling good, not guilty. Smoking gives a quick high and then takes energy away. Choose something that truly restores you, a walk, good music, or quiet time, and let that become your real reward."
+  }
+];
+
+
+/* ==================== Local Storage ==================== */
+function saveJournalLocal(journalObj) {
+  const key = "smoking_journals";
+  const arr = JSON.parse(localStorage.getItem(key) || "[]");
+  arr.push(journalObj);
+  localStorage.setItem(key, JSON.stringify(arr));
+}
+
+function getRandomPastJournal() {
+  const arr = JSON.parse(localStorage.getItem("smoking_journals") || "[]");
+  if (arr.length === 0) return null;
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+async function sendJournalToDatabase(journalObj) {
+  console.log("Sending to database:", journalObj);
+  // Replace with actual API endpoint
+  // return fetch('/api/save_journal', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(journalObj)});
+  return new Promise(resolve => setTimeout(()=>resolve({ok:true}), 600));
+}
+
+function saveReminder(rem) {
+  const key = "smoking_reminders";
+  const arr = JSON.parse(localStorage.getItem(key) || "[]");
+  arr.push(rem);
+  localStorage.setItem(key, JSON.stringify(arr));
+}
+
+/* ==================== Background Image Rotation ==================== */
+
+const bg = document.getElementById("background");
+let imgIndex = Math.floor(Math.random() * imageList.length);
+
+bg.style.backgroundImage = `url('${imageList[imgIndex]}')`;
+
+setInterval(() => {
+  imgIndex = (imgIndex + 1) % imageList.length;
+  bg.style.backgroundImage = `url('${imageList[imgIndex]}')`;
+}, 15000);
+
+
+/* ==================== FLOW STEPS ==================== */
+
+/* Initial Feeling Step */
+function renderFeelingStep() {
+  panel.innerHTML = "";
+  const card = document.createElement("div");
+  card.className = "panel-card";
+  card.innerHTML = `
+    <div class="option-title">How are you feeling right now?</div>
+    <div class="option-desc small" style="margin-top:8px">Hi there. Let's check in with how you're feeling. Take a deep breath and answer honestly; there's no judgment here.</div>
+  `;
+  
+  const opts = [
+    {v:"calm",t:"😌 Calm with no urge to smoke",d:"You're in a good place; calm, balanced, and smoke-free."},
+    {v:"mild",t:"😐 Mild urge to smoke, but manageable",d:"You're aware and in control. Let's explore what might help."},
+    {v:"strong",t:"😰 Very strong urge to smoke at the moment",d:"The urge feels intense. Let's help your body and mind calm down first."}
+  ];
+
+  opts.forEach(o => {
+    const div = document.createElement("div");
+    div.className = "option-card";
+    div.tabIndex = 0;
+    div.innerHTML = `<div class="option-title">${o.t}</div><div class="option-desc">${o.d}</div>`;
+    div.addEventListener("click", ()=> selectFeeling(o.v));
+    div.addEventListener("keypress", (e)=>{ if(e.key === "Enter") selectFeeling(o.v); });
+    card.appendChild(div);
+  });
+
+  panel.appendChild(card);
+  panel.classList.add("active");
+}
+
+function selectFeeling(value) {
+  flowState.feeling = value;
+  if (value === "calm") renderCalmJournal();
+  else if (value === "mild") renderMildQuestions();
+  else renderStrongFlow();
+}
+
+/* ==================== CALM PATH ==================== */
+function renderCalmJournal() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">✨ That's great to hear!</div>
+      <div class="alert info">You're in a good place; calm, balanced, and smoke-free. Let's use this moment of stability to strengthen your future self.</div>
+      <div class="small" style="margin-top:12px;font-weight:600">Take a minute to write about how you feel right now:</div>
+      <ul class="small" style="padding-left:20px;margin-top:8px">
+        <li>What's keeping you strong?</li>
+        <li>What helps you stay smoke-free?</li>
+        <li>A message or resolution to your future self</li>
+      </ul>
+      <textarea id="calmJournal" placeholder="Example: 'Today I felt calm after my morning walk. I'm proud I resisted the urge after coffee. Future me: you can do this!'" class="journal" style="margin-top:12px"></textarea>
+      <div class="card-row">
+        <button class="btn success" id="saveCalmBtn">💾 Save & Send to Database</button>
+        <button class="btn clear" id="skipCalmBtn">Skip for now</button>
+      </div>
+      <div id="calmMsg" class="small" style="margin-top:12px"></div>
+    </div>
+  `;
+
+  document.getElementById("saveCalmBtn").addEventListener("click", async ()=> {
+    const text = document.getElementById("calmJournal").value.trim();
+    if (!text) {
+      document.getElementById("calmMsg").innerHTML = '<span style="color:var(--warning)">A short note will help later; or you can skip.</span>';
+      return;
+    }
+    const journalObj = { text, timestamp: new Date().toISOString(), type:"calm", feeling: flowState.feeling };
+    saveJournalLocal(journalObj);
+    document.getElementById("calmMsg").textContent = "Saving...";
+
+    try {
+      await sendJournalToDatabase(journalObj);
+      document.getElementById("calmMsg").innerHTML = '<div class="alert success">✓ Saved and sent. Your reflection has been saved. Each entry becomes part of your personal motivation archive.</div>';
+    } catch (e) {
+      document.getElementById("calmMsg").innerHTML = '<div class="alert warning">Saved locally. Could not send to server.</div>';
+    }
+    setTimeout(()=> renderCalmEnd(), 1200);
+  });
+
+  document.getElementById("skipCalmBtn").addEventListener("click", ()=> renderCalmEnd());
+}
+
+function renderCalmEnd() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🎯 Keep this momentum</div>
+      <div class="alert success">When future cravings appear, remember how strong, peaceful, and in control you felt right now!!</div>
+      <div class="card-row">
+        <button class="btn" id="viewReflections">📖 View previous reflections</button>
+        <button class="btn" id="endSession">End session</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("viewReflections").addEventListener("click", ()=> viewPastReflections());
+  document.getElementById("endSession").addEventListener("click", ()=> resetFlow());
+}
+
+function renderMildEnd() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🎯 One step at a time, you're already making progress</div>
+      <div class="alert success">
+        When the next craving appears, remember this moment of determination and how far you've come.
+      </div>
+      <div class="card-row" style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
+        <button class="btn" id="viewMildReflections">📖 View previous reflections</button>
+        <button class="btn clear" id="endMildSession">End session</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("viewMildReflections").addEventListener("click", ()=> viewPastReflections());
+  document.getElementById("endMildSession").addEventListener("click", ()=> resetFlow());
+}
+
+
+function renderStrongEnd() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🎯 Can you hold out for 30 minutes?</div>
+      <div class="alert success">
+        Remember the calm you felt during smoke-free moments, the peace, the control, the strength. 
+        This craving will pass. If it feels too strong, take a walk, breathe, or reach out for support before acting on it. 
+        You’ve already proven you can handle tough moments like this.
+      </div>
+      <div class="card-row" style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
+        <button class="btn" id="viewStrongReflections">📖 View previous reflections</button>
+        <button class="btn clear" id="endStrongSession">End session</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("viewStrongReflections").addEventListener("click", ()=> viewPastReflections());
+  document.getElementById("endStrongSession").addEventListener("click", ()=> resetFlow());
+}
+
+
+
+function viewPastReflections() {
+  const journals = JSON.parse(localStorage.getItem("smoking_journals") || "[]");
+  if (journals.length === 0) {
+    panel.innerHTML = `
+      <div class="panel-card">
+        <div class="option-title">📖 Past Reflections</div>
+        <div class="alert info">No reflections saved yet. Start writing to build your motivation archive!</div>
+        <button class="btn" onclick="renderFeelingStep()">Back</button>
+      </div>
+    `;
+    return;
+  }
+  
+  let html = `<div class="panel-card"><div class="option-title">📖 Your Past Reflections</div>`;
+  journals.slice().reverse().forEach((j, i) => {
+    const date = new Date(j.timestamp).toLocaleString();
+    html += `<div class="alert info" style="margin-top:12px"><strong>${date}</strong><br>${j.text}</div>`;
+  });
+  html += `<button class="btn" onclick="renderFeelingStep()">Back</button></div>`;
+  panel.innerHTML = html;
+}
+
+/* ==================== MILD PATH ==================== */
+function renderMildQuestions() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🔍 Let's explore what might be causing this feeling</div>
+      <div class="alert info">You're doing well; noticing the urge means you're aware and in control.</div>
+      
+      <div class="small" style="margin-top:16px;font-weight:600">1. Was your Nicotine Replacement Therapy (NRT) dosage tapered recently?</div>
+      <div class="card-row">
+        <button class="btn" id="nrtYes">Yes, recently reduced</button>
+        <button class="btn" id="nrtSame">No, same as before</button>
+        <button class="btn clear" id="nrtNone">Not using NRT anymore</button>
+      </div>
+      
+      <div id="nrtMsg" style="margin-top:12px"></div>
+      
+      <div class="small" style="margin-top:16px;font-weight:600">2. Have there been any recent environmental or life changes?</div>
+      <div class="option-desc small" style="margin-top:4px">(stress, travel, relationship changes, new routines)</div>
+      <div class="card-row">
+        <button class="btn" id="envYes">Yes</button>
+        <button class="btn clear" id="envNo">No</button>
+      </div>
+      
+      <div id="envMsg" style="margin-top:12px"></div>
+      <div id="mildNextStep" style="margin-top:16px"></div>
+    </div>
+  `;
+
+  document.getElementById("nrtYes").addEventListener("click", ()=> {
+    flowState.nrtReduced = true;
+    document.getElementById("nrtMsg").innerHTML = '<div class="alert warning"> 🩺 Reducing NRT can increase cravings because your body is adjusting to the reduced dosage. However, as long as it\'s not interfering too much with your daily life, try to keep it under control. </div>';
+  });
+  document.getElementById("nrtSame").addEventListener("click", ()=> {
+    flowState.nrtReduced = false;
+    document.getElementById("nrtMsg").innerHTML = '<div class="alert info">Thanks for the information. Your NRT dosage is consistent.</div>';
+  });
+  document.getElementById("nrtNone").addEventListener("click", ()=> {
+    flowState.nrtReduced = null;
+    document.getElementById("nrtMsg").innerHTML = '<div class="alert info">Noted. You\'re managing without NRT support.</div>';
+  });
+
+
+
+
+document.getElementById("envYes").addEventListener("click", () => {
+  flowState.envChanges = true;
+  const envOptionsHTML = `
+    <div style="margin-top:12px;padding:12px;background:var(--light);border-radius:var(--radius);">
+      <div style="font-weight:600;margin-bottom:12px;">What kind of changes have been affecting you lately?</div>
+      <button class="btn small" id="envStress" style="margin-bottom:6px;width:100%;text-align:left;">😰 Work stress</button>
+      <button class="btn small" id="envTravel" style="margin-bottom:6px;width:100%;text-align:left;">✈️ Travel or relocation</button>
+      <button class="btn small" id="envRelation" style="margin-bottom:6px;width:100%;text-align:left;">💔 Relationship changes</button>
+      <button class="btn small" id="envFinance" style="margin-bottom:6px;width:100%;text-align:left;">💰 Financial pressure</button>
+      <button class="btn small" id="envHealth" style="margin-bottom:6px;width:100%;text-align:left;">🏥 Health or sleep issues</button>
+      <button class="btn small" id="envSocial" style="margin-bottom:6px;width:100%;text-align:left;">🧍 Social situations</button>
+      <button class="btn small" id="envBoredom" style="margin-bottom:6px;width:100%;text-align:left;">😐 Boredom or downtime</button>
+    </div>
+    <div id="envSuggestion" style="margin-top:12px;"></div>
+  `;
+  
+  document.getElementById("envMsg").innerHTML = envOptionsHTML;
+
+const suggestions = {
+  envStress: "Take short breathing breaks or stretch. A quick walk or brief chat can ease tension without lighting up. Try breathing or mindfulness exercises as advised by your clinician. Remember, smoking only reduces work stress for a brief moment. You have come a long way and the resilience you build now will help you in the long run.",
+
+  envTravel: "Keep small routines consistent. Music, journaling, or short pauses can help you stay grounded.",
+
+  envRelation: "Lean on trusted friends or outlets. A craving passes faster than emotional stress. People come and go, and while it is not healthy to suppress emotions, smoking is not a friendly outlet. Try morning walks or new hobbies. This too shall pass.",
+
+  envFinance: "Every smoke skipped is money saved. Reward yourself with small wins or free ways to relax. Smoking only adds to health costs later. Life is long, face challenges directly. Problems often feel bigger in your mind, and smoking tends to make them worse.",
+
+  envHealth: "Focus on rest, hydration, and balance. Healing takes time, but you are helping your body recover. Consult your clinician if problems persist. If health anxiety is affecting you, get a proper checkup and treatment so your mind can be at ease.",
+
+  envSocial: "If you are around smokers, keep something in your hand or step away briefly. It is okay to set boundaries. Real friends accept your choices. While smoking may start socially, it often continues in isolation. Your efforts are helping you move toward a healthier circle.",
+
+  envBoredom: "Use that moment to stretch, doodle, or engage your senses with something positive. The urge usually fades in minutes. It is your mind looking for stimulation, and smoking is not true engagement. Give your mind something better to focus on."
+};
+
+
+  Object.keys(suggestions).forEach(key => {
+    document.getElementById(key).addEventListener("click", () => {
+      flowState.environmentDetails = key;
+      document.getElementById("envSuggestion").innerHTML = `<div class="alert success">💡 ${suggestions[key]}</div>`;
+      setTimeout(() => showNext24hQuestion(), 800);
+    });
+  });
+});
+
+
+
+
+  document.getElementById("envNo").addEventListener("click", ()=> {
+    flowState.envChanges = false;
+    document.getElementById("envMsg").innerHTML = '<div class="alert info">Good. Your environment has been stable.</div>';
+    setTimeout(showNext24hQuestion, 500);
+  });
+}
+
+function showNext24hQuestion() {
+  document.getElementById("mildNextStep").innerHTML = `
+    <div class="panel-card" style="background:var(--light);padding:16px">
+      <div class="small" style="font-weight:600">Do you feel that you might smoke in the next 6
+
+ hours?</div>
+      <div class="card-row">
+        <button class="btn success" id="next24No">Not at all</button>
+        <button class="btn" id="next24Maybe">I might</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("next24No").addEventListener("click", ()=> {
+    flowState.next24h = "no";
+    renderMildSafe();
+  });
+  document.getElementById("next24Maybe").addEventListener("click", ()=> {
+    flowState.next24h = "maybe";
+    renderMildRisk();
+  });
+}
+
+function renderMildSafe() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">💪 Excellent!</div>
+      <div class="alert success">That's excellent. You're maintaining strong control. Every urge resisted strengthens your brain's smoke-free wiring.</div>
+      
+      <div class="small" style="margin-top:16px;font-weight:600">Why not write a short note about this resolution and how you determined you feel right now, despite all the challenges!</div>
+      <div class="option-desc small" style="margin-top:6px">
+        Examples:<br>
+        • "Why am I proud of myself today?"<br>
+        • "What's my reason for staying smoke-free?"<br>
+        • "What will I do if I feel tempted later?"
+      </div>
+      
+      <textarea id="mildResolution" class="journal" placeholder="Example: 'I'm proud I resisted after lunch today. I'm staying smoke-free for my health and my family.'" style="margin-top:12px"></textarea>
+      
+      <div class="card-row">
+        <button class="btn success" id="saveMildRes">💾 Save resolution</button>
+        <button class="btn clear" id="skipMildRes">Skip</button>
+      </div>
+      <div id="mildResMsg" style="margin-top:12px"></div>
+    </div>
+  `;
+
+  document.getElementById("saveMildRes").addEventListener("click", async ()=> {
+    const text = document.getElementById("mildResolution").value.trim();
+    if (!text) {
+      document.getElementById("mildResMsg").innerHTML = '<span style="color:var(--warning)">A small note helps later; or you can skip.</span>';
+      return;
+    }
+    const journalObj = { text, timestamp: new Date().toISOString(), type:"mild-safe", feeling: flowState.feeling };
+    saveJournalLocal(journalObj);
+    try {
+      await sendJournalToDatabase(journalObj);
+      document.getElementById("mildResMsg").innerHTML = '<div class="alert success">✓ Resolution saved. Remember; every written word becomes part of your inner strength library.</div>';
+    } catch(e) {
+      document.getElementById("mildResMsg").innerHTML = '<div class="alert warning">Saved locally.</div>';
+    }
+    setTimeout(()=> renderEndCard("Resolution saved; when tempted, read this note and take a 5-minute pause."), 1000);
+  });
+
+  document.getElementById("skipMildRes").addEventListener("click", ()=> renderEndCard("You're set for now. Keep yourself engaged, and even these mild cravings will fade away!."));
+}
+
+
+function renderMildRisk() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🎯 Let's explore the risk</div>
+      <div class="alert info">Understanding the environment and the internalized reasons helps us plan a practical response.</div>
+      
+      <div class="small" style="margin-top:16px;font-weight:600;">
+        In what situations do you feel most tempted to smoke? (Select all that apply)
+      </div>
+      <div class="card-row env-options" id="situationOptions">
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="meals" /> After meals
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="coffee" /> With coffee/alcohol
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="stress" /> During stress
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="driving" /> While driving
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="social" /> Social events
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="boredom" /> Boredom/alone
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="work" /> At work breaks
+        </label>
+        <label style="display:block;margin-bottom:12px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="smokers" /> Around other smokers
+        </label>
+      </div>
+      
+      <button id="confirmSituations" class="btn success" style="width:100%;margin-top:12px;">✓ Confirm selections</button>
+      <div id="envSelected" style="margin-top:16px"></div>
+    </div>
+  `;
+
+  document.getElementById("confirmSituations").addEventListener("click", () => {
+    const selected = Array.from(document.querySelectorAll(".situation-check:checked")).map(cb => cb.dataset.env);
+    
+    if(selected.length === 0) {
+      alert("Please select at least one situation");
+      return;
+    }
+
+    flowState.environment = selected;
+    document.getElementById("envSelected").innerHTML = `<div class="alert info">✓ That's insightful. Knowing your triggers is a huge step toward control.</div>`;
+    setTimeout(showRationalizationMild, 1500);
+  });
+}
+
+
+
+function showRationalizationMild() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">💭 Let's address the Thoughts</div>
+      <div class="small" style="font-weight:600;margin-bottom:12px;">
+        Sometimes the mind tries to justify smoking. Which thoughts are you noticing right now? (Select all that apply)
+      </div>
+      <div id="rationalizationCheckboxes"></div>
+      <button id="confirmRationalizations" class="btn success" style="width:100%;margin-top:16px;">✓ Continue</button>
+    </div>
+  `;
+
+  const checkboxContainer = document.querySelector('.panel-card');
+  let checkboxHTML = ``;
+  
+  rationalizationOptions.forEach(opt => {
+    checkboxHTML += `
+      <label style="display:block;margin-bottom:10px;padding:10px;background:var(--light);border-radius:6px;cursor:pointer;">
+        <input type="checkbox" class="rational-check" data-id="${opt.id}" data-label="${opt.label}" data-reframe="${opt.reframe}" />
+        <strong>"${opt.label}"</strong>
+        <div style="font-size:0.85rem;color:var(--muted);margin-top:4px;">${opt.fallacy}</div>
+      </label>
+    `;
+  });
+
+  document.getElementById("rationalizationCheckboxes").innerHTML = checkboxHTML;
+
+  document.getElementById("confirmRationalizations").addEventListener("click", () => {
+    const selected = Array.from(document.querySelectorAll(".rational-check:checked"));
+    
+    if(selected.length === 0) {
+      alert("Please select at least one thought you're experiencing");
+      return;
+    }
+
+    flowState.rationalization = selected.map(cb => ({
+      id: cb.dataset.id,
+      label: cb.dataset.label,
+      reframe: cb.dataset.reframe
+    }));
+
+    showReframesmild(selected);
+  });
+}
+
+
+function showReframesmild(selectedCheckboxes) {
+  const selectedSituations = flowState.environment || [];
+
+
+
+  
+  const situationAdvice = {
+    meals: "After meals, brush your teeth or rinse your mouth, chew gum or mints, or take a short walk to reset your routine",
+    coffee: "Change where or how you drink coffee, keep your hands busy with a mug, pen, or phone, and have gum or water nearby",
+    stress: "Use deep breathing and mindfulness exercises, roll up a pen and take long deep breaths pretending it’s a cigarette with eyes closed, step outside or stretch, or call or text someone supportive instead of lighting up",
+    driving: "Keep gum or mints in the car, listen to podcasts or music to stay distracted, and avoid usual smoking spots or long idle drives",
+    social: "Hold a drink or snack to keep your hands busy, bring gum or lozenges only to be used when under extreme cravings, and politely move away if people start smoking.",
+    boredom: "Do something active or engaging like stretching, doodling, playing a quick game, or cleaning up a small area. If unable to think of anything else to do, just get up and jump 20-30 times.",
+    work: "Take breaks for a short walk, grab a healthy snack, or do a one-minute breathing exercise to manage cravings",
+    smokers: "Be clear that you're cutting back or quitting, suggest doing something else together, or excuse yourself if it gets hard to resist. Remember,  no one can force you to smoke."
+  };
+
+  
+
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🧠 Cognitive Reframe</div>
+      
+      <div id="reframesDisplay" style="margin-bottom:20px;"></div>
+
+      <div style="border-top:2px solid var(--light);padding-top:16px;margin-top:16px;margin-bottom:20px;">
+        <div id="situationAdviceDisplay" style="margin-top:12px;"></div>
+        <div class="small" style="font-weight:600;margin-bottom:12px;">🎯 Preventive advice for these situations:</div>
+        <ul class="support-list" style="margin:8px 0;padding-left:20px;">
+          <li>If you're not confident, it's okay to avoid those triggers temporarily</li>
+          <li>Schedule a suitable reminder with a note that says: "I will not smoke here"</li>
+          <li>Every urge resisted strengthens your brain's smoke-free wiring</li>
+        </ul>
+   
+      </div>
+
+      <div class="card-row" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+        <button class="btn success" id="writeReflection">✍️ Write reflection</button>
+        <button class="btn" id="setReminderBtn">🔔 Set a reminder</button>
+      </div>
+
+      <div class="card-row" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+        <button class="btn clear" id="skipMildBtn">Skip for now</button>
+      </div>
+
+      <div id="actionMsg" style="margin-top:12px;"></div>
+    </div>
+  `;
+
+
+  // Display all rebuttals for each selected rationalization
+  let reframeHTML = ``;
+  selectedCheckboxes.forEach(cb => {
+    reframeHTML += `
+      <div class="alert warning" style="margin-bottom:12px;">
+        <strong>Your thought:</strong> "${cb.dataset.label}"<br>
+      </div>
+      <div class="alert success" style="margin-bottom:12px;">
+        <strong>✨ Try this instead:</strong><br>${cb.dataset.reframe}
+      </div>
+    `;
+  });
+  document.getElementById("reframesDisplay").innerHTML = reframeHTML;
+
+  // Display situation advice
+  let situationHTML = ``;
+  selectedSituations.forEach(situation => {
+    const advice = situationAdvice[situation];
+    const situationNames = {
+      meals: "📍 After meals",
+      coffee: "☕ With coffee/alcohol",
+      stress: "😰 During stress",
+      driving: "🚗 While driving",
+      social: "👥 Social events",
+      boredom: "😐 Boredom/alone",
+      work: "💼 At work breaks",
+      smokers: "🚭 Around other smokers"
+    };
+    
+    situationHTML += `
+      <div style="background:var(--light);padding:10px;border-radius:6px;margin-bottom:8px;border-left:3px solid var(--success);">
+        <strong>${situationNames[situation]}:</strong> ${advice}
+      </div>
+    `;
+  });
+  document.getElementById("situationAdviceDisplay").innerHTML = situationHTML;
+
+  // Write reflection button
+  document.getElementById("writeReflection").addEventListener("click", () => renderQuickResolution());
+
+  // Set reminder button
+  document.getElementById("setReminderBtn").addEventListener("click", () => {
+    const reminderNote = selectedCheckboxes.map(cb => cb.dataset.label).join(', ');
+    const reminder = {
+      id: Date.now(),
+      situations: selectedSituations,
+      rationalizations: reminderNote,
+      note: `Avoid these situations: ${selectedSituations.join(', ')}. Remember: You can handle this!`,
+      created: new Date().toISOString()
+    };
+    saveReminder(reminder);
+    document.getElementById("actionMsg").innerHTML = '<div class="alert success">✓ Reminder saved! Consider enabling phone notifications for real-time alerts.</div>';
+  });
+
+  // Navigation buttons
+  document.getElementById("skipMildBtn").addEventListener("click", ()=> renderMildEnd());
+}
+
+/* ==================== STRONG PATH ==================== */
+function renderStrongFlow() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🆘 You're experiencing a strong craving</div>
+      <div class="alert warning">It's okay. You're experiencing a strong craving; but you're here instead of smoking, and that's powerful. Let's help your body and mind calm down first.</div>
+      
+      <div class="small" style="margin-top:16px;font-weight:600">Choose a grounding option:</div>
+      <div class="card-row" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+        <button class="btn success" id="startBreathStrong">🫁 Quick breathing exercise</button>
+	 <button class="btn" id="personalToolkit">🧰 Your Personal Toolkit</button>
+        <button class="btn" id="readPastJournal">📖 Read past journal</button>
+      </div>
+      <div id="strongContent" style="margin-top:16px"></div>
+    </div>
+  `;
+
+  document.getElementById("startBreathStrong").addEventListener("click", ()=> renderBreathing("strong"));
+  document.getElementById("personalToolkit").addEventListener("click", showPersonalToolkit);
+  document.getElementById("readPastJournal").addEventListener("click", showPastJournal);
+}
+
+
+
+function showPersonalToolkit() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🧰 Your Personal Toolkit</div>
+      <div class="option-desc small">Choose tools to work through this craving right now:</div>
+      
+      <div style="margin-top:16px;display:grid;gap:10px;">
+        <button class="btn id" id="toolThoughtRecord" style="width:100%;text-align:left;">🧠 Thought Record - Challenge this thought</button>
+        <button class="btn" id="toolCopingCard" style="width:100%;text-align:left;">📝 Coping Card - Read your personal strategies</button>
+        <button class="btn" id="toolMindfulness" style="width:100%;text-align:left;">🧘 Mindfulness Exercise - 5 min guided</button>
+        <button class="btn" id="toolMotivation" style="width:100%;text-align:left;">💪 Motivation Boost - Success stories</button>
+        <button class="btn" id="toolVideo" style="width:100%;text-align:left;">🎥 Educational Video - Understand nicotine</button>
+        <button class="btn" id="toolVideoRel" style="width:100%;text-align:left;">🎥 Deep Relaxing Videos - Do nothing, watch a video</button>
+	<button class="btn" id="toolCognitiveTask" style="width:100%;text-align:left;">🧮 Mental Math Challenge</button>
+        <button class="btn" id="toolAudio" style="width:100%;text-align:left;">🎧 Guided Audio - Urge surfing technique</button>
+        <button class="btn" id="toolExercise" style="width:100%;text-align:left;">💪 Quick Exercise - 2 min energy boost</button>
+      </div>
+      
+      <div id="toolkitContent" style="margin-top:16px;"></div>
+      
+      <button class="btn clear" id="backToOptions" style="width:100%;margin-top:12px;">Back to options</button>
+    </div>
+  `;
+
+  document.getElementById("toolThoughtRecord").addEventListener("click", renderThoughtRecord);
+  document.getElementById("toolCopingCard").addEventListener("click", showCopingCard);
+  document.getElementById("toolMindfulness").addEventListener("click", renderMindfulness);
+  document.getElementById("toolMotivation").addEventListener("click", showMotivationBoost);
+  document.getElementById("toolVideoRel").addEventListener("click", showRelaxVideo);
+  document.getElementById("toolVideo").addEventListener("click", showEducationalVideo);
+  document.getElementById("toolCognitiveTask").addEventListener("click", showCognitiveTask);
+  document.getElementById("toolAudio").addEventListener("click", showAudioGuide);
+  document.getElementById("toolExercise").addEventListener("click", showQuickExercise);
+  document.getElementById("backToOptions").addEventListener("click", () => renderStrongFlow());
+}
+
+
+function showCognitiveTask() {
+  let questions = [];
+  for (let i = 0; i < 30; i++) {
+    const a = Math.floor(Math.random() * 20) + 1;
+    const b = Math.floor(Math.random() * 20) + 1;
+    const op = Math.random() > 0.5 ? '+' : '-';
+    questions.push({ a, b, op });
+  }
+
+  let currentQuestion = 0;
+  let correctAnswers = 0;
+  let timeLeft = 120;
+  let timerId;
+
+  function renderQuestion() {
+    if (currentQuestion >= 30) {
+      showFinalScore();
+      return;
+    }
+
+    const q = questions[currentQuestion];
+    document.getElementById("toolkitContent").innerHTML = `
+      <div class="alert info" style="margin-bottom:12px;">
+        Question ${currentQuestion + 1} of 30 | Score: ${correctAnswers}
+      </div>
+      <div style="background:var(--light);padding:16px;border-radius:var(--radius);text-align:center;margin-bottom:12px;">
+        <div style="font-size:1.8rem;font-weight:600;margin-bottom:12px;">${q.a} ${q.op} ${q.b} = ?</div>
+        <input type="number" id="mathAnswer" style="width:100%;padding:12px;font-size:1.2rem;text-align:center;" placeholder="Enter your answer" autofocus/>
+        <button class="btn success" id="nextBtn" style="width:100%;margin-top:12px;">Next →</button>
+      </div>
+      <div style="text-align:center;font-weight:600;color:var(--danger);">⏱️ Time left: <span id="timer">${timeLeft}</span> seconds</div>
+    `;
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      const userAnswer = parseInt(document.getElementById("mathAnswer").value);
+      const correctAnswer = q.op === '+' ? q.a + q.b : q.a - q.b;
+      
+      if (userAnswer === correctAnswer) {
+        correctAnswers++;
+      }
+      
+      currentQuestion++;
+      renderQuestion();
+    });
+
+    // Allow Enter key to submit
+    document.getElementById("mathAnswer").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        document.getElementById("nextBtn").click();
+      }
+    });
+  }
+
+  function showFinalScore() {
+    clearInterval(timerId);
+    document.getElementById("toolkitContent").innerHTML = `
+      <div class="alert success" style="margin-bottom:12px;">🎉 Challenge complete!</div>
+      <div style="background:var(--light);padding:16px;border-radius:var(--radius);text-align:center;margin-bottom:12px;">
+        <div style="font-size:1.5rem;font-weight:600;margin-bottom:8px;">You scored:</div>
+        <div style="font-size:2rem;color:var(--success);font-weight:700;">${correctAnswers} / 30</div>
+        <div style="margin-top:12px;color:var(--dark);">Time remaining: ${timeLeft} seconds</div>
+        <div style="margin-top:12px;font-size:0.9rem;">Great work keeping your mind engaged!</div>
+      </div>
+      <button class="btn clear" id="backToToolkit" style="width:100%;margin-top:12px;">← Back to toolkit</button>
+    `;
+    
+    document.getElementById("backToToolkit").addEventListener("click", showPersonalToolkit);
+  }
+
+  // Start timer
+  timerId = setInterval(() => {
+    timeLeft--;
+    const timerEl = document.getElementById("timer");
+    if (timerEl) timerEl.textContent = timeLeft;
+    
+    if (timeLeft <= 0) {
+      clearInterval(timerId);
+      showFinalScore();
+    }
+  }, 1000);
+
+  renderQuestion();
+}
+
+
+
+
+function renderThoughtRecord() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert info" style="margin-bottom:12px;">💭 Challenge your smoking thought right now</div>
+    <div style="background:var(--light);padding:12px;border-radius:var(--radius);margin-bottom:12px;">
+      <div style="font-weight:600;margin-bottom:8px;">What thought are you having?</div>
+      <textarea id="thoughtInput" placeholder="E.g., 'I need a cigarette right now'" class="journal" style="margin-bottom:12px;"></textarea>
+      
+      <div style="font-weight:600;margin-bottom:8px;">What evidence supports this?</div>
+      <textarea id="evidenceFor" placeholder="E.g., 'I smoked after stress before'" class="journal" style="margin-bottom:12px;"></textarea>
+      
+      <div style="font-weight:600;margin-bottom:8px;">What evidence argues against it?</div>
+      <textarea id="evidenceAgainst" placeholder="E.g., 'I got through yesterday without smoking'" class="journal" style="margin-bottom:12px;"></textarea>
+      
+      <button class="btn success" onclick="completedThoughtRecord()" style="width:100%;">✓ I see it differently now</button>
+    </div>
+  `;
+}
+
+function completedThoughtRecord() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert success">✓ Great work! You challenged that thought. The urge usually weakens when we examine it closely.</div>
+    <button class="btn clear" id="backToToolkit" style="width:100%;margin-top:12px;">← Back to toolkit</button>
+  `;
+  document.getElementById("backToToolkit").addEventListener("click", showPersonalToolkit);
+}
+
+function showCopingCard() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert success" style="margin-bottom:12px;">📝 Your personal coping strategies:</div>
+    <div style="background:white;padding:12px;border-radius:var(--radius);border-left:4px solid var(--success);">
+      <div style="margin-bottom:12px;">
+        <strong>When stressed:</strong> Take 5 deep breaths, go for a walk, call someone I trust
+      </div>
+      <div style="margin-bottom:12px;">
+        <strong>When bored:</strong> Do pushups, play a game, sketch, read
+      </div>
+      <div style="margin-bottom:12px;">
+        <strong>When social:</strong> Chew gum, excuse myself, stay busy
+      </div>
+      <div style="margin-bottom:12px;">
+        <strong>Emergency reminder:</strong> I've quit this many times before. I can do this again.
+      </div>
+    </div>
+    <button class="btn clear" id="backToToolkit2" style="width:100%;margin-top:12px;">← Back to toolkit</button>
+  `;
+  document.getElementById("backToToolkit2").addEventListener("click", showPersonalToolkit);
+}
+
+function renderMindfulness() {
+  const content = `
+    <div class="alert info" role="alert" aria-live="polite">
+      🧘 <strong>5-Minute Mindfulness:</strong> Follow the motion, breathe, and observe.
+    </div>
+
+    <div class="mindfulness-card fade-in">
+      <div class="mindfulness-title">Breathe with the movement...</div>
+
+      <div class="mindfulness-visual">
+        <div id="movingOrb" class="moving-orb"></div>
+        <div class="breath-instructions">Let your attention follow the flow.</div>
+      </div>
+
+      <div class="mindfulness-prompts">
+        <p>💭 Notice thoughts passing by like clouds.</p>
+        <p>🫁 Match your breath to the orb’s gentle rhythm.</p>
+        <p>🫀 Feel your body soften with each exhale.</p>
+        <em>Nothing to do. Just breathe and observe movement.</em>
+      </div>
+
+      <button class="btn success mindfulness-btn" onclick="completedMindfulness()">
+        I completed mindfulness
+      </button>
+    </div>
+  `;
+
+  document.getElementById("toolkitContent").innerHTML = content;
+
+  // Floating orb movement logic
+  const orb = document.getElementById("movingOrb");
+  if (orb) {
+    const container = document.querySelector(".mindfulness-visual");
+    const bounds = container.getBoundingClientRect();
+
+    let x = 90, y = 90;
+    let dx = (Math.random() - 0.5) * 2;
+    let dy = (Math.random() - 0.5) * 2;
+
+    function moveOrb() {
+      x += dx;
+      y += dy;
+
+      // Bounce or change direction near edges
+      if (x < 5 || x > 100) dx *= -1;
+      if (y < 5|| y > 100) dy *= -1;
+
+      orb.style.left = `${x}%`;
+      orb.style.top = `${y}%`;
+
+      requestAnimationFrame(moveOrb);
+    }
+
+    moveOrb();
+  }
+}
+
+
+function completedMindfulness() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert success">✓ Urges are like waves, they rise, peak, and fall. You just rode one out.</div>
+    <button class="btn clear" id="backToToolkit3" style="width:100%;margin-top:12px;">← Back to toolkit</button>
+  `;
+  document.getElementById("backToToolkit3").addEventListener("click", showPersonalToolkit);
+}
+
+function showMotivationBoost() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert success" style="margin-bottom:12px;">💪 Success stories from people like you:</div>
+    <div style="background:white;padding:12px;border-radius:var(--radius);border-left:4px solid var(--success);margin-bottom:12px;">
+      <div style="margin-bottom:12px;"><strong>"After day 3, it got easier"</strong> - Every urge I resisted made me stronger</div>
+      <div style="margin-bottom:12px;"><strong>"Breathing actually works"</strong> - I was shocked how effective it is</div>
+      <div style="margin-bottom:12px;"><strong>"I saved $200 in 2 weeks"</strong> - That money reminded me why I'm doing this</div>
+      <div><strong>"My family noticed"</strong> - They're proud and that keeps me going</div>
+    </div>
+    <button class="btn clear" id="backToToolkit4" style="width:100%;margin-top:12px;">← Back to toolkit</button>
+  `;
+  document.getElementById("backToToolkit4").addEventListener("click", showPersonalToolkit);
+}
+
+function showEducationalVideo() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert info" style="margin-bottom:12px;">🎥 Understanding nicotine addiction:</div>
+    <div style="background:#f0f0f0;padding:12px;border-radius:var(--radius);margin-bottom:12px;text-align:center;">
+      <div style="margin-bottom:12px;font-weight:600;">How Nicotine Tricks Your Brain (3 min)</div>
+      <div style="background:white;padding:40px;border-radius:6px;margin-bottom:12px;">
+        <div style="font-size:2rem;">▶️ Video Player</div>
+        <div style="font-size:0.9rem;color:var(--muted);margin-top:8px;">Internal Server Error</div>
+      </div>
+      <button class="btn success" onclick="watchedVideo()" style="width:100%;">I watched the video</button>
+    </div>
+  `;
+}
+
+function watchedVideo() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert success">✓ Understanding how nicotine works helps you resist it.</div>
+    <button class="btn clear" id="backToToolkit5" style="width:100%;margin-top:12px;">← Back to toolkit</button>
+  `;
+  document.getElementById("backToToolkit5").addEventListener("click", showPersonalToolkit);
+}
+
+
+function showRelaxVideo() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert info" style="margin-bottom:12px;">🎥 Take a moment to unwind:</div>
+    <div style="background:#f0f0f0;padding:12px;border-radius:var(--radius);margin-bottom:12px;text-align:center;">
+      <div style="margin-bottom:12px;font-weight:600;">Eat 5 Star, do nothing (3 min)</div>
+      <div style="background:white;padding:40px;border-radius:6px;margin-bottom:12px;">
+        <div style="font-size:2rem;">▶️ Video Player</div>
+        <div style="font-size:0.9rem;color:var(--muted);margin-top:8px;">Internal Server Error</div>
+      </div>
+      <button class="btn success" onclick="watchedRelaxVideo()" style="width:100%;">I watched the video</button>
+    </div>
+  `;
+}
+
+function watchedRelaxVideo() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert success">✓ Hope that helped you relax. </div>
+    <button class="btn clear" id="backToToolkit5" style="width:100%;margin-top:12px;">← Back to toolkit</button>
+  `;
+  document.getElementById("backToToolkit5").addEventListener("click", showPersonalToolkit);
+}
+
+
+
+
+function showAudioGuide() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert info" style="margin-bottom:12px;">🎧 Guided Urge Surfing (5 min audio)</div>
+    <div style="background:white;padding:12px;border-radius:var(--radius);text-align:center;">
+      <div style="font-size:1.5rem;margin-bottom:12px;">🎵 ▶️ Audio Playing</div>
+      <div style="font-size:0.9rem;color:var(--muted);margin-bottom:12px;">Listen to this technique: ride the urge like a wave without acting on it</div>
+      <button class="btn success" onclick="listenedAudio()" style="width:100%;">I listened to the audio</button>
+    </div>
+  `;
+}
+
+function listenedAudio() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert success">✓ Urge surfing is powerful, you're learning to observe without reacting.</div>
+    <button class="btn clear" id="backToToolkit6" style="width:100%;margin-top:12px;">← Back to toolkit</button>
+  `;
+  document.getElementById("backToToolkit6").addEventListener("click", showPersonalToolkit);
+}
+
+function showQuickExercise() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert info" style="margin-bottom:12px;">💪 2-minute quick exercise:</div>
+    <div style="background:var(--light);padding:12px;border-radius:var(--radius);">
+      <div style="margin-bottom:12px;"><strong>Do these:</strong></div>
+      <div style="margin-bottom:12px;">• 20 jumping jacks</div>
+      <div style="margin-bottom:12px;">• 10 pushups </div>
+      <div style="margin-bottom:12px;">• 20 second plank</div>
+      <div style="margin-bottom:12px;">• 10 burpees</div>
+      <button class="btn success" onclick="completedExercise()" style="width:100%;margin-top:12px;">✓ I did the exercises</button>
+    </div>
+  `;
+}
+
+function completedExercise() {
+  document.getElementById("toolkitContent").innerHTML = `
+    <div class="alert success">✓ Exercise kills cravings. Your endorphins are working for you now, not nicotine.</div>
+    <button class="btn clear" id="backToToolkit7" style="width:100%;margin-top:12px;">← Back to toolkit</button>
+  `;
+  document.getElementById("backToToolkit7").addEventListener("click", showPersonalToolkit);
+}
+
+
+function showPastJournal() {
+  const past = getRandomPastJournal();
+  if (!past) {
+    document.getElementById("strongContent").innerHTML = '<div class="alert info">No past journals found. After this session, write your first reflection!</div>';
+    setTimeout(renderStrongQuestions, 1500);
+    return;
+  }
+  
+  document.getElementById("strongContent").innerHTML = `
+    <div class="alert success">
+      <strong>✨ Here's something you wrote when you felt strong:</strong><br><br>
+      <em style="font-size:1.05rem">"${past.text}"</em><br><br>
+      <small>${new Date(past.timestamp).toLocaleDateString()}</small>
+    </div>
+    <div class="small" style="margin-top:12px">Let those words remind you who you are beyond this moment.</div>
+    <button class="btn" id="continueStrong" style="margin-top:12px">Continue</button>
+  `;
+  
+  document.getElementById("continueStrong").addEventListener("click", renderStrongQuestions);
+}
+
+function showVideoOptions() {
+  document.getElementById("strongContent").innerHTML = `
+    <div class="panel-card" style="background:var(--light)">
+      <div class="small" style="font-weight:600">Choose a practice (1-3 minutes each):</div>
+      <div class="card-row">
+        <button class="btn" id="vid1">2-min grounding</button>
+        <button class="btn" id="vid2">Visualization</button>
+        <button class="btn" id="vid3">5-4-3-2-1 exercise</button>
+      </div>
+      <div id="videoDisplay" style="margin-top:12px"></div>
+    </div>
+  `;
+
+  document.getElementById("vid1").addEventListener("click", ()=> {
+    document.getElementById("videoDisplay").innerHTML = '<div class="alert info">🎬 Grounding clip: Breathe with the speaker for 2 minutes. (Video placeholder - integrate YouTube or MP4)</div><button class="btn" onclick="renderStrongQuestions()" style="margin-top:12px">Done</button>';
+  });
+  document.getElementById("vid2").addEventListener("click", ()=> {
+    document.getElementById("videoDisplay").innerHTML = '<div class="alert info">🎬 Visualization: Imagine a calm place. Notice colors, sounds, smells. Stay for 2 minutes.</div><button class="btn" onclick="renderStrongQuestions()" style="margin-top:12px">Done</button>';
+  });
+  document.getElementById("vid3").addEventListener("click", ()=> {
+    document.getElementById("videoDisplay").innerHTML = `
+      <div class="alert info">
+        <strong>5-4-3-2-1 Grounding Exercise:</strong><br>
+        • Name <strong>5 things</strong> you can see<br>
+        • Name <strong>4 things</strong> you can touch<br>
+        • Name <strong>3 things</strong> you can hear<br>
+        • Name <strong>2 things</strong> you can smell<br>
+        • Name <strong>1 thing</strong> you can taste<br><br>
+        Take your time with each step.
+      </div>
+      <button class="btn" onclick="renderStrongQuestions()" style="margin-top:12px">Done</button>
+    `;
+  });
+}
+
+function renderStrongQuestions() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🔍 Let's check a few things</div>
+      
+      <div class="small" style="margin-top:12px;font-weight:600">1. Have you reduced or changed your NRT dosage recently?</div>
+      <div class="card-row">
+        <button class="btn" id="strongNrtYes">Yes</button>
+        <button class="btn" id="strongNrtNo">No</button>
+        <button class="btn clear" id="strongNrtNone">Not using NRT</button>
+      </div>
+      <div id="strongNrtMsg" style="margin-top:12px"></div>
+      
+      <div class="small" style="margin-top:16px;font-weight:600">2. Any recent life events or environmental changes?</div>
+      <div class="card-row">
+        <button class="btn" id="strongenvYes">Yes</button>
+        <button class="btn clear" id="strongenvNo">No</button>
+      </div>
+      <div id="strongenvMsg" style="margin-top:12px"></div>
+      
+      <div id="strong24h" style="margin-top:16px"></div>
+    </div>
+  `;
+
+  document.getElementById("strongNrtYes").addEventListener("click", ()=> {
+    flowState.nrtReduced = true;
+    document.getElementById("strongNrtMsg").innerHTML = '<div class="alert warning">You might be experiencing withdrawal from dosage change. It\'s okay; speak with your clinician about pacing your taper.</div>';
+  });
+  document.getElementById("strongNrtNo").addEventListener("click", ()=> {
+    flowState.nrtReduced = false;
+    document.getElementById("strongNrtMsg").innerHTML = '<div class="alert info">NRT dosage is stable.</div>';
+  });
+  document.getElementById("strongNrtNone").addEventListener("click", ()=> {
+    flowState.nrtReduced = null;
+    document.getElementById("strongNrtMsg").innerHTML = '<div class="alert info">Noted. Managing without NRT.</div>';
+  });
+
+
+
+document.getElementById("strongenvYes").addEventListener("click", () => {
+  flowState.envChanges = true;
+  const envOptionsHTML = `
+    <div style="margin-top:12px;padding:12px;background:var(--light);border-radius:var(--radius);">
+      <div style="font-weight:600;margin-bottom:12px;">What kind of changes have been affecting you lately?</div>
+      <button class="btn small" id="strongenvStress" style="margin-bottom:6px;width:100%;text-align:left;">😰 Work stress</button>
+      <button class="btn small" id="strongenvTravel" style="margin-bottom:6px;width:100%;text-align:left;">✈️ Travel or relocation</button>
+      <button class="btn small" id="strongenvRelation" style="margin-bottom:6px;width:100%;text-align:left;">💔 Relationship changes</button>
+      <button class="btn small" id="strongenvFinance" style="margin-bottom:6px;width:100%;text-align:left;">💰 Financial pressure</button>
+      <button class="btn small" id="strongenvHealth" style="margin-bottom:6px;width:100%;text-align:left;">🏥 Health or sleep issues</button>
+      <button class="btn small" id="strongenvSocial" style="margin-bottom:6px;width:100%;text-align:left;">🧍 Social situations</button>
+      <button class="btn small" id="strongenvBoredom" style="margin-bottom:6px;width:100%;text-align:left;">😐 Boredom or downtime</button>
+    </div>
+    <div id="strongenvSuggestion" style="margin-top:12px;"></div>
+  `;
+  
+  document.getElementById("strongenvMsg").innerHTML = envOptionsHTML;
+
+const suggestions = {
+  strongenvStress: "Take short breathing breaks or stretch. A quick walk or brief chat can ease tension without lighting up. Try breathing or mindfulness exercises as advised by your clinician. Remember, smoking only reduces work stress for a brief moment. You have come a long way and the resilience you build now will help you in the long run.",
+
+  strongenvTravel: "Keep small routines consistent. Music, journaling, or short pauses can help you stay grounded.",
+
+  strongenvRelation: "Lean on trusted friends or outlets. A craving passes faster than emotional stress. People come and go, and while it is not healthy to suppress emotions, smoking is not a friendly outlet. Try morning walks or new hobbies. This too shall pass.",
+
+  strongenvFinance: "Every smoke skipped is money saved. Reward yourself with small wins or free ways to relax. Smoking only adds to health costs later. Life is long, face challenges directly. Problems often feel bigger in your mind, and smoking tends to make them worse.",
+
+  strongenvHealth: "Focus on rest, hydration, and balance. Healing takes time, but you are helping your body recover. Consult your clinician if problems persist. If health anxiety is affecting you, get a proper checkup and treatment so your mind can be at ease.",
+
+  strongenvSocial: "If you are around smokers, keep something in your hand or step away briefly. It is okay to set boundaries. Real friends accept your choices. While smoking may start socially, it often continues in isolation. Your efforts are helping you move toward a healthier circle.",
+
+  strongenvBoredom: "Use that moment to stretch, doodle, or engage your senses with something positive. The urge usually fades in minutes. It is your mind looking for stimulation, and smoking is not true engagement. Give your mind something better to focus on."
+};
+
+
+  Object.keys(suggestions).forEach(key => {
+    document.getElementById(key).addEventListener("click", () => {
+      flowState.environmentDetails = key;
+      document.getElementById("strongenvSuggestion").innerHTML = `<div class="alert success">💡 ${suggestions[key]}</div>`;
+      setTimeout(() => showStrong24h(), 800);
+    });
+  });
+});
+
+
+
+  document.getElementById("strongenvNo").addEventListener("click", ()=> {
+    flowState.envChanges = false;
+    document.getElementById("strongenvMsg").innerHTML = '<div class="alert info">Good. Your environment has been stable.</div>';
+    setTimeout(showStrong24h, 500);
+  });
+}
+
+
+function showStrong24h() {
+  document.getElementById("strong24h").innerHTML = `
+    <div class="panel-card" style="background:var(--light)">
+      <div class="small" style="font-weight:600">Do you think you might smoke in the next 1 hour?</div>
+      <div class="card-row">
+        <button class="btn success" id="strong24No">No, I will manage. </button>
+        <button class="btn" id="strong24Maybe">I might</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("strong24No").addEventListener("click", ()=> {
+    flowState.next24h = "no";
+    renderStrongSafe();
+  });
+  document.getElementById("strong24Maybe").addEventListener("click", ()=> {
+    flowState.next24h = "maybe";
+    renderStrongRisk(); // Reuse risk flow
+  });
+}
+
+function renderStrongSafe() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">💪 That's amazing!</div>
+      <div class="alert success">You're holding your ground even under pressure. That takes real strength.</div>
+      
+      <div class="small" style="margin-top:16px;font-weight:600">Immediate support options:</div>
+      <ul class="support-list">
+        <li>If the craving gets unbearable, you can safely use a 2 mg nicotine gum or lozenge</li>
+        <li>Avoid deciding impulsively; take a short walk or drink water before acting</li>
+        <li>Remind yourself: urges peak and fade; just like waves</li>
+        <li>You don't need to fight it; you just need to ride it out</li>
+      </ul>
+      
+      <div class="card-row">
+        <button class="btn" id="callClinic">📞 Contact clinician</button>
+        <button class="btn" id="writeStrongRes">✍️ Write reflection</button>
+      </div>
+    </div>
+  `;
+
+
+  document.getElementById("callClinic").addEventListener("click", ()=> {
+    if(confirm("Call your clinician or support helpline now?\n\nThis will attempt to open your phone app.")){
+      window.location.href = "tel:+91-8076945839"; 
+    }
+  });
+
+  document.getElementById("writeStrongRes").addEventListener("click", ()=> renderQuickResolution());
+}
+
+
+
+
+/*==================== Strong Risks ========================== */
+
+
+
+function renderStrongRisk() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🎯 Let's explore the risk</div>
+      <div class="alert info">Understanding the environment and the internalized reasons helps us plan a practical response.</div>
+      
+      <div class="small" style="margin-top:16px;font-weight:600;">
+        In what situations do you feel most tempted to smoke? (Select all that apply)
+      </div>
+      <div class="card-row env-options" id="situationOptions">
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="meals" /> After meals
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="coffee" /> With coffee/alcohol
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="stress" /> During stress
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="driving" /> While driving
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="social" /> Social events
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="boredom" /> Boredom/alone
+        </label>
+        <label style="display:block;margin-bottom:8px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="work" /> At work breaks
+        </label>
+        <label style="display:block;margin-bottom:12px;cursor:pointer;">
+          <input type="checkbox" class="situation-check" data-env="smokers" /> Around other smokers
+        </label>
+      </div>
+      
+      <button id="confirmSituations" class="btn success" style="width:100%;margin-top:12px;">✓ Confirm selections</button>
+      <div id="envSelected" style="margin-top:16px"></div>
+    </div>
+  `;
+
+  document.getElementById("confirmSituations").addEventListener("click", () => {
+    const selected = Array.from(document.querySelectorAll(".situation-check:checked")).map(cb => cb.dataset.env);
+    
+    if(selected.length === 0) {
+      alert("Please select at least one situation");
+      return;
+    }
+
+    flowState.environment = selected;
+    document.getElementById("envSelected").innerHTML = `<div class="alert info">✓ That's insightful. Knowing your triggers is a huge step toward control.</div>`;
+    setTimeout(showRationalizationStrong, 500);
+  });
+}
+
+
+
+function showRationalizationStrong() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">💭 Let's address the Thoughts</div>
+      <div class="small" style="font-weight:600;margin-bottom:12px;">
+        Sometimes the mind tries to justify smoking. Which thoughts are you noticing right now? (Select all that apply)
+      </div>
+      <div id="rationalizationCheckboxes"></div>
+      <button id="confirmRationalizations" class="btn success" style="width:100%;margin-top:16px;">✓ Continue</button>
+    </div>
+  `;
+
+  const checkboxContainer = document.querySelector('.panel-card');
+  let checkboxHTML = ``;
+  
+  rationalizationOptions.forEach(opt => {
+    checkboxHTML += `
+      <label style="display:block;margin-bottom:10px;padding:10px;background:var(--light);border-radius:6px;cursor:pointer;">
+        <input type="checkbox" class="rational-check" data-id="${opt.id}" data-label="${opt.label}" data-reframe="${opt.reframe}" />
+        <strong>"${opt.label}"</strong>
+        <div style="font-size:0.85rem;color:var(--muted);margin-top:4px;">${opt.fallacy}</div>
+      </label>
+    `;
+  });
+
+  document.getElementById("rationalizationCheckboxes").innerHTML = checkboxHTML;
+
+  document.getElementById("confirmRationalizations").addEventListener("click", () => {
+    const selected = Array.from(document.querySelectorAll(".rational-check:checked"));
+    
+    if(selected.length === 0) {
+      alert("Please select at least one thought you're experiencing");
+      return;
+    }
+
+    flowState.rationalization = selected.map(cb => ({
+      id: cb.dataset.id,
+      label: cb.dataset.label,
+      reframe: cb.dataset.reframe
+    }));
+
+    showReframesStrong(selected);
+  });
+}
+
+
+function showReframesStrong(selectedCheckboxes) {
+  const selectedSituations = flowState.environment || [];
+  
+  const situationAdvice = {
+    meals: "After meals, brush your teeth or rinse your mouth, chew gum or mints, or take a short walk to reset your routine",
+    coffee: "Change where or how you drink coffee, keep your hands busy with a mug, pen, or phone, and have gum or water nearby",
+    stress: "Use deep breathing and mindfulness exercises, roll up a pen and take long deep breaths pretending it’s a cigarette with eyes closed, step outside or stretch, or call or text someone supportive instead of lighting up",
+    driving: "Keep gum or mints in the car, listen to podcasts or music to stay distracted, and avoid usual smoking spots or long idle drives",
+    social: "Hold a drink or snack to keep your hands busy, bring gum or lozenges only to be used when under extreme cravings, and politely move away if people start smoking.",
+    boredom: "Do something active or engaging like stretching, doodling, playing a quick game, or cleaning up a small area. If unable to think of anything else to do, just get up and jump 20-30 times.",
+    work: "Take breaks for a short walk, grab a healthy snack, or do a one-minute breathing exercise to manage cravings",
+    smokers: "Be clear that you're cutting back or quitting, suggest doing something else together, or excuse yourself if it gets hard to resist. Remember,  no one can force you to smoke."
+  };
+
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🧠 Cognitive Reframe</div>
+      
+      <div id="reframesDisplay" style="margin-bottom:20px;"></div>
+
+      <div style="border-top:2px solid var(--light);padding-top:16px;margin-top:16px;margin-bottom:20px;">
+        <div id="situationAdviceDisplay" style="margin-top:12px;"></div>
+        <div class="small" style="font-weight:600;margin-bottom:12px;">🎯 Preventive advice for these situations:</div>
+        <ul class="support-list" style="margin:8px 0;padding-left:20px;">
+          <li>If you're not confident, it's okay to avoid those triggers temporarily</li>
+          <li>Schedule a suitable reminder with a note that says: "I will not smoke here"</li>
+          <li>Every urge resisted strengthens your brain's smoke-free wiring</li>
+        </ul>
+   
+      </div>
+
+      <div class="card-row" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">
+        <button class="btn success" id="writesReflection">✍️ Write reflection</button>
+        <button class="btn" id="setsReminderBtn">🔔 Set a reminder</button>
+      </div>
+
+      <div class="card-row" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+        <button class="btn clear" id="skipStrongBtn">Skip for now</button>
+      </div>
+
+      <div id="actionsMsg" style="margin-top:12px;"></div>
+    </div>
+  `;
+
+
+  // Display all rebuttals for each selected rationalization
+  let reframeHTML = ``;
+  selectedCheckboxes.forEach(cb => {
+    reframeHTML += `
+      <div class="alert warning" style="margin-bottom:12px;">
+        <strong>Your thought:</strong> "${cb.dataset.label}"<br>
+      </div>
+      <div class="alert success" style="margin-bottom:12px;">
+        <strong>✨ Try this instead:</strong><br>${cb.dataset.reframe}
+      </div>
+    `;
+  });
+  document.getElementById("reframesDisplay").innerHTML = reframeHTML;
+
+  // Display situation advice
+  let situationHTML = ``;
+  selectedSituations.forEach(situation => {
+    const advice = situationAdvice[situation];
+    const situationNames = {
+      meals: "📍 After meals",
+      coffee: "☕ With coffee/alcohol",
+      stress: "😰 During stress",
+      driving: "🚗 While driving",
+      social: "👥 Social events",
+      boredom: "😐 Boredom/alone",
+      work: "💼 At work breaks",
+      smokers: "🚭 Around other smokers"
+    };
+    
+    situationHTML += `
+      <div style="background:var(--light);padding:10px;border-radius:6px;margin-bottom:8px;border-left:3px solid var(--success);">
+        <strong>${situationNames[situation]}:</strong> ${advice}
+      </div>
+    `;
+  });
+  document.getElementById("situationAdviceDisplay").innerHTML = situationHTML;
+
+  // Write reflection button
+  document.getElementById("writesReflection").addEventListener("click", () => renderQuickResolution());
+
+  // Set reminder button
+  document.getElementById("setsReminderBtn").addEventListener("click", () => {
+    const reminderNote = selectedCheckboxes.map(cb => cb.dataset.label).join(', ');
+    const reminder = {
+      id: Date.now(),
+      situations: selectedSituations,
+      rationalizations: reminderNote,
+      note: `Avoid these situations: ${selectedSituations.join(', ')}. Remember: You can handle this!`,
+      created: new Date().toISOString()
+    };
+    saveReminder(reminder);
+    document.getElementById("actionsMsg").innerHTML = '<div class="alert success">✓ Reminder saved! Consider enabling phone notifications for real-time alerts.</div>';
+  });
+
+  // Navigation buttons
+  document.getElementById("skipStrongBtn").addEventListener("click", ()=> renderStrongEnd());
+}
+
+
+/* ==================== BREATHING EXERCISE ==================== */
+function renderBreathing(returnPath) {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🫁 Guided Breathing Exercise</div>
+      <div class="small" style="text-align:center">Let's take a minute to breathe together. This will help calm your nervous system.</div>
+      
+      <div style="text-align:center;padding:20px">
+        <div id="breathInstruction" style="font-size:1.2rem;font-weight:600;margin-bottom:12px;color:var(--primary)">Press Start to begin</div>
+        <div id="breathCircle">🫁</div>
+        <div id="breathCountdown" style="font-size:2rem;margin-top:12px;color:var(--secondary);font-weight:700"></div>
+        
+        <div class="card-row" style="justify-content:center;margin-top:16px">
+          <button class="btn success" id="startBreathBtn">▶️ Start</button>
+          <button class="btn clear" id="skipBreathBtn">Skip</button>
+        </div>
+      </div>
+      <div id="breathMsg" style="margin-top:12px"></div>
+    </div>
+  `;
+
+  const breathPhases = [
+    { text: "Inhale slowly through your nose", duration: 4, scale: 1.3 },
+    { text: "Hold your breath", duration: 4, scale: 1.3 },
+    { text: "Exhale slowly through your mouth", duration: 6, scale: 0.9 }
+  ];
+  
+  let phaseIndex = 0;
+  let countdown = 0;
+  let interval;
+  let cycleCount = 0;
+
+  const circleEl = document.getElementById("breathCircle");
+  const instructionEl = document.getElementById("breathInstruction");
+  const countdownEl = document.getElementById("breathCountdown");
+  const startBtn = document.getElementById("startBreathBtn");
+  const skipBtn = document.getElementById("skipBreathBtn");
+
+  function startPhase() {
+    const phase = breathPhases[phaseIndex];
+    instructionEl.textContent = phase.text;
+    countdown = phase.duration;
+    countdownEl.textContent = countdown;
+    circleEl.style.transform = `scale(${phase.scale})`;
+
+    clearInterval(interval);
+    interval = setInterval(()=> {
+      countdown--;
+      countdownEl.textContent = countdown;
+      if (countdown <= 0) {
+        clearInterval(interval);
+        phaseIndex++;
+        if (phaseIndex >= breathPhases.length) {
+          cycleCount++;
+          if (cycleCount < 1) {
+            phaseIndex = 0;
+            startPhase();
+          } else {
+            instructionEl.textContent = "✓ Done. Notice how your body feels calmer.";
+            countdownEl.textContent = "";
+            circleEl.style.transform = "scale(1)";
+            document.getElementById("breathMsg").innerHTML = `
+              <div class="card-row" style="display: flex; justify-content: center; gap: 10px;">
+                <button class="btn" id="againBtn">🔄 Repeat </button>
+                <button class="btn success" id="continueBtn"> Return ↩️</button>
+              </div>
+            `;
+            document.getElementById("againBtn").addEventListener("click", ()=> { cycleCount = 0; phaseIndex = 0; startPhase(); });
+            document.getElementById("continueBtn").addEventListener("click", ()=> {
+              if(returnPath === "mild") renderStrongRisk();
+              else if(returnPath === "strong") renderStrongFlow();
+              else renderEndCard("Great work on the breathing exercise!");
+            });
+          }
+          return;
+        }
+        startPhase();
+      }
+    }, 1000);
+  }
+
+  startBtn.addEventListener("click", ()=> {
+    startBtn.style.display = "none";
+    skipBtn.style.display = "none";
+    startPhase();
+  });
+
+  skipBtn.addEventListener("click", ()=> {
+    if(returnPath === "mild") renderStrongRisk();
+    else if(returnPath === "strong") renderStrongFlow();
+    else renderEndCard("You can always come back to the breathing exercise.");
+  });
+}
+
+/* ==================== QUICK RESOLUTION ==================== */
+function renderQuickResolution() {
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">✍️ Write a short resolution</div>
+      <div class="small">Realizing that cravings and reasons to smoke are temporary, write a short note about any thoughts you have at the moment and how you plan to handle your next craving. Examples:</div>
+      <ul class="small" style="padding-left:20px;margin-top:6px">
+        <li>"I will wait 15 minutes and text a friend"</li>
+        <li>"I've quit before and I can do it again"</li>
+        <li>"My health is more important than this craving"</li>
+      </ul>
+      
+      <textarea id="quickRes" class="journal" placeholder="Type your resolution here..." style="margin-top:12px"></textarea>
+      
+      <div class="card-row">
+        <button class="btn success" id="saveQuickResBtn">💾 Save & Send</button>
+        <button class="btn clear" id="cancelQuickRes">Cancel</button>
+      </div>
+      <div id="quickResMsg" style="margin-top:12px"></div>
+    </div>
+  `;
+
+  document.getElementById("saveQuickResBtn").addEventListener("click", async ()=> {
+    const txt = document.getElementById("quickRes").value.trim();
+    if (!txt) {
+      document.getElementById("quickResMsg").innerHTML = '<span style="color:var(--warning)">A short note helps; or you can cancel.</span>';
+      return;
+    }
+    const journalObj = { text: txt, timestamp: new Date().toISOString(), type: "resolution", feeling: flowState.feeling };
+    saveJournalLocal(journalObj);
+    try {
+      await sendJournalToDatabase(journalObj);
+      document.getElementById("quickResMsg").innerHTML = '<div class="alert success">✓ Saved and sent.</div>';
+    } catch(e) {
+      document.getElementById("quickResMsg").innerHTML = '<div class="alert warning">Saved locally.</div>';
+    }
+    setTimeout(()=> renderEndCard("Your resolution is saved. You can revisit it whenever needed."), 1000);
+  });
+
+  document.getElementById("cancelQuickRes").addEventListener("click", ()=> renderEndCard("You're doing what you can; that's important."));
+}
+
+/* ==================== END CARD ==================== */
+function renderEndCard(message) {
+  const motivationalMessages = [
+    "This urge will pass; just like every other one before it.",
+    "You are not your craving. You are the person choosing freedom.",
+    "Think of all the times you didn't smoke; those moments define you.",
+    "Even when it's hard, every second without a cigarette is victory.",
+    "The urge is temporary. The pride of overcoming it lasts forever."
+  ];
+  
+  const randomMotivation = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+  
+  panel.innerHTML = `
+    <div class="panel-card">
+      <div class="option-title">🎯 You're doing something positive</div>
+      <div class="alert success">${message}</div>
+      
+      <div class="alert info" style="margin-top:16px">
+        <strong>💭 Remember:</strong><br>${randomMotivation}
+      </div>
+      
+      <div class="card-row">
+        <button class="btn success" id="restartBtn">🔄 New check-in</button>
+        <button class="btn" id="viewReflectionsEnd">📖 View reflections</button>
+        <button class="btn clear" id="closeBtn">Close</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("restartBtn").addEventListener("click", ()=> renderFeelingStep());
+  document.getElementById("viewReflectionsEnd").addEventListener("click", ()=> viewPastReflections());
+  document.getElementById("closeBtn").addEventListener("click", ()=> resetFlow());
+}
+
+function resetFlow() {
+  panel.classList.remove("active");
+  circle.classList.add("pulse");
+  flowState = {
+    feeling: null,
+    nrtReduced: null,
+    envChanges: null,
+    next24h: null,
+    environment: null,
+    rationalization: null,
+    resolution: null,
+    journalText: null,
+    reminder: null
+  };
+}
+
+/* ==================== INITIALIZATION ==================== */
+circle.addEventListener("click", ()=> {
+  circle.classList.remove("pulse");
+  if (panel.classList.contains("active")) {
+    resetFlow();
+  } else {
+    panel.classList.add("active");
+    renderFeelingStep();
+  }
+});
+
+circle.addEventListener("keypress", (e)=> {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    circle.click();
+  }
+});
+
+// Optional: Auto-open on first load (comment out if not desired)
+// window.addEventListener("load", ()=> {
+//   setTimeout(()=> {
+//     panel.classList.add("active");
+//     renderFeelingStep();
+//   }, 500);
+// });
+</script>
+
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.querySelector(".loading-overlay");
+  const delay = 1500 + Math.random() * 2000;
+  setTimeout(() => {
+    overlay.style.animation = "fadeOut 1s forwards";
+    setTimeout(() => overlay.remove(), 1000);
+  }, delay);
+});
+</script>
+
+
+</body>
+</html>
