@@ -165,6 +165,8 @@
         <a href="index.html" class="back-link">Back to Home</a>
     </div>
 
+
+    
     <script>
         function calculateNicotineAbsorption() {
             const cigarettes = parseFloat(document.getElementById('cigarettes').value);
@@ -178,28 +180,23 @@
     
             const BLOOD_VOLUME = 6000; // mL
             const HALF_LIFE = 2; // hours
-            const ELIMINATION_CONSTANT = Math.LN2 / (HALF_LIFE * 60); // Convert half-life to per-minute decay rate
-            const TOTAL_DURATION = 16 * 60; // Convert hours to minutes
+            const ELIMINATION_CONSTANT = Math.LN2 / (HALF_LIFE * 60); // per-minute decay
+            const TOTAL_DURATION = 16 * 60; // 16 hours in minutes
     
-            const INTERVAL = Math.floor(TOTAL_DURATION / cigarettes); // Interval in minutes
+            const INTERVAL = Math.floor(TOTAL_DURATION / cigarettes);
             let bloodNicotine = 0;
-            let nicotineSum = 0; // Sum of nicotine values at each minute
+            let nicotineSum = 0;
             let nicotineSamples = 0;
             let preCigaretteNicotineSum = 0;
             let preCigaretteCount = 0;
     
-            // Convert nicotine content to ng
             const NICOTINE_ABSORBED_PER_CIG = (nicotineContent * inhalationDepth * 1000000) / (BLOOD_VOLUME * 10);
     
             for (let i = 0; i < cigarettes; i++) {
-                // Store pre-cigarette level before adding nicotine
                 preCigaretteNicotineSum += bloodNicotine;
                 preCigaretteCount++;
-    
-                // Add nicotine from cigarette
                 bloodNicotine += NICOTINE_ABSORBED_PER_CIG;
     
-                // Apply minute-by-minute elimination until next cigarette
                 for (let j = 0; j < INTERVAL; j++) {
                     nicotineSum += bloodNicotine;
                     nicotineSamples++;
@@ -207,7 +204,6 @@
                 }
             }
     
-            // Final decay after last cigarette, minute-by-minute
             const remainingTime = TOTAL_DURATION - (cigarettes * INTERVAL);
             for (let j = 0; j < remainingTime; j++) {
                 nicotineSum += bloodNicotine;
@@ -215,27 +211,37 @@
                 bloodNicotine *= Math.exp(-ELIMINATION_CONSTANT);
             }
     
-            // Compute mean nicotine level over time
             const meanNicotineLevel = nicotineSum / nicotineSamples;
+            const thresholdNicotineLevel = preCigaretteNicotineSum / (preCigaretteCount - 1);
+            const dailyAbsorbed = cigarettes * nicotineContent * inhalationDepth;
     
-            // Compute threshold nicotine level (pre-cigarette mean)
-            const thresholdNicotineLevel = preCigaretteNicotineSum / (preCigaretteCount-1);
+            // Helper: calculate ±10% range
+            function range(value, decimals = 1) {
+                const low = (value * 0.9).toFixed(decimals);
+                const high = (value * 1.1).toFixed(decimals);
+                return `${low} – ${high}`;
+            }
     
             // Display results
             const resultArea = document.getElementById('resultArea');
             resultArea.style.display = 'block';
             resultArea.innerHTML = `
                 <div class="result-line">
-                    Daily Nicotine Absorbed: <span class="highlight">${(cigarettes * nicotineContent * inhalationDepth).toFixed(2)} mg</span>
+                    Daily Nicotine Absorbed: 
+                    <span class="highlight">${range(dailyAbsorbed, 2)} mg</span>
                 </div>
                 <div class="result-line">
-                    Mean Daytime Blood Nicotine Level*: <span class="highlight">${meanNicotineLevel.toFixed(1)} ng/mL</span>
+                    Mean Daytime Blood Nicotine Level*: 
+                    <span class="highlight">${range(meanNicotineLevel, 1)} ng/mL</span>
                 </div>
                 <div class="result-line">
-                    Threshold Blood Nicotine Level : <span class="highlight">${thresholdNicotineLevel.toFixed(1)} ng/mL</span>
+                    Threshold Blood Nicotine Level: 
+                    <span class="highlight">${range(thresholdNicotineLevel, 1)} ng/mL</span>
                 </div>
             `;
         }
     </script>
+
 </body>
 </html>
+
