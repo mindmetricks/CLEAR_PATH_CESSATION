@@ -54,7 +54,7 @@
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
             color: white;
             padding: 1.25rem 0;
-            padding-bottom: 1rem;
+            padding-bottom: 1rem; /* or margin-bottom */
             box-shadow: var(--card-shadow);
             position: sticky;
             top: 0;
@@ -83,7 +83,6 @@
             display: flex;
             align-items: center;
             gap: 1.5rem;
-            flex-wrap: wrap;
         }
 
         .nav-link {
@@ -97,33 +96,6 @@
         .nav-link:hover {
             color: var(--bright-accent);
             text-shadow: 0 0 8px rgba(255, 140, 66, 0.3);
-        }
-
-        .quick-peek-icons {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .quick-peek-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            font-size: 1.4rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .quick-peek-icon:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: scale(1.15);
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
         }
 
         .theme-toggle {
@@ -146,128 +118,14 @@
             transform: rotate(20deg) scale(1.1);
         }
 
-        /* ========== QUICK PEEK MODAL ========== */
-        .quick-peek-modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-        }
-
-        .quick-peek-modal-content {
-            background: linear-gradient(135deg, white 0%, #f8fafc 100%);
-            margin: 10% auto;
-            padding: 2.5rem;
-            border-radius: 20px;
-            max-width: 500px;
-            box-shadow: 0 20px 60px rgba(44, 90, 160, 0.3);
-            animation: slideUp 0.4s ease-out;
-        }
-
-        .quick-peek-modal .close {
-            color: var(--primary-blue);
-            float: right;
-            font-size: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .quick-peek-modal .close:hover {
-            color: var(--bright-accent);
-            transform: rotate(90deg);
-        }
-
-        .quick-peek-title {
-            color: var(--primary-blue);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            margin-top: 0;
-        }
-
-        .quick-peek-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .quick-peek-input-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .quick-peek-input-group label {
-            font-weight: 600;
-            color: var(--primary-blue);
-            margin-bottom: 0.5rem;
-        }
-
-        .quick-peek-input-group input {
-            padding: 0.75rem;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .quick-peek-input-group input:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 8px rgba(44, 90, 160, 0.2);
-        }
-
-        .quick-peek-btn {
-            padding: 0.85rem;
-            background: linear-gradient(135deg, var(--primary-blue), var(--accent-blue));
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            margin-top: 0.5rem;
-        }
-
-        .quick-peek-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(44, 90, 160, 0.3);
-        }
-
-        .quick-peek-result {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        .quick-peek-result.money {
-            background: linear-gradient(135deg, #d4edda, #c3e6cb);
-            border-left: 4px solid #28a745;
-            color: #155724;
-        }
-
-        .quick-peek-result.tar {
-            background: linear-gradient(135deg, #fff3cd, #ffeeba);
-            border-left: 4px solid #ffc107;
-            color: #856404;
-        }
-
         /* ========== HERO SLIDER ========== */
         .hero-slider {
             position: relative;
             width: calc(100% - 4rem);
-            margin: 0 2rem 4rem 2rem;
+            margin: 0 2rem 4rem 2rem; 
             height: 520px;
             overflow: hidden;
-            border-radius: 20px;
+            border-radius: 20px 20px 20px 20px;
             box-shadow: 0 15px 40px rgba(44, 90, 160, 0.2);
         }
 
@@ -370,6 +228,7 @@
             box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
         }
 
+        /* Slider Dots */
         .slider-dots {
             position: absolute;
             bottom: 25px;
@@ -429,6 +288,7 @@
             grid-auto-rows: auto;
         }
 
+        /* Asymmetric Layout */
         .tile:nth-child(1) {
             grid-column: span 2;
             grid-row: span 2;
@@ -681,21 +541,22 @@
 
         /* ========== FOOTER ========== */
         footer {
-            background: #32a852;
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
             color: white;
-            padding: 1rem 0;
             text-align: center;
-            font-size: 14px;
-            margin-top: 4rem;
+            padding: 2.5rem 0;
+            margin-top: 6rem;
         }
 
         /* ========== DARK MODE ========== */
+
         body.dark-mode {
             background: linear-gradient(135deg, #0f111a 0%, #1b1f30 100%);
             color: #d1d9e6;
             transition: var(--transition);
         }
-
+        
+        /* Text Colors */
         body.dark-mode .tile-body p,
         body.dark-mode .modal-body,
         body.dark-mode .modal-body p,
@@ -703,55 +564,58 @@
         body.dark-mode .intro-section p {
             color: #cbd5e1;
         }
-
+        
         body.dark-mode header {
             background: linear-gradient(135deg, #16213e 0%, #0f111a 100%);
             box-shadow: 0 8px 24px rgba(255, 140, 66, 0.3);
         }
-
+        
         body.dark-mode .logo,
         body.dark-mode .nav-link,
         body.dark-mode .theme-toggle {
             color: #ffb870;
         }
-
+        
         body.dark-mode .nav-link:hover {
             color: var(--bright-accent);
             text-shadow: 0 0 12px rgba(255, 140, 66, 0.8);
         }
-
+        
         body.dark-mode .theme-toggle {
             background: rgba(255, 255, 255, 0.1);
             border-color: rgba(255, 255, 255, 0.2);
         }
-
+        
         body.dark-mode .theme-toggle:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: rotate(20deg) scale(1.1);
         }
-
+        
+        /* Tiles */
         body.dark-mode .tile {
-            background: #1e293b;
+            background: #1e293b; /* dark slate */
             border-color: rgba(255, 140, 66, 0.25);
             box-shadow: 0 8px 24px rgba(255, 140, 66, 0.1);
         }
-
+        
         body.dark-mode .tile:hover {
             box-shadow: 0 15px 40px rgba(255, 140, 66, 0.4);
             border-color: var(--bright-accent);
             transform: translateY(-8px);
         }
-
+        
+        /* Tile Headers */
         body.dark-mode .tile-header {
             background: linear-gradient(135deg, #ff7a1f 0%, #ff8c42 100%);
             color: #1a1a1a;
             box-shadow: 0 0 12px rgba(255, 140, 66, 0.7);
         }
-
+        
         body.dark-mode .tile-header::before {
             background: radial-gradient(circle, rgba(255, 140, 66, 0.3) 0%, transparent 70%);
         }
-
+        
+        /* Buttons */
         body.dark-mode .tile-btn,
         body.dark-mode .slide-btn,
         body.dark-mode .modal-links a {
@@ -759,7 +623,7 @@
             color: #1a1a1a;
             box-shadow: 0 4px 15px rgba(255, 140, 66, 0.6);
         }
-
+        
         body.dark-mode .tile-btn:hover,
         body.dark-mode .slide-btn:hover,
         body.dark-mode .modal-links a:hover {
@@ -767,93 +631,72 @@
             box-shadow: 0 6px 20px rgba(255, 140, 66, 0.8);
             color: #fff;
         }
-
+        
+        /* Modal */
         body.dark-mode .modal {
             background-color: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(8px);
         }
-
+        
         body.dark-mode .modal-content {
             background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
             box-shadow: 0 20px 60px rgba(255, 140, 66, 0.6);
             color: #cbd5e1;
         }
-
+        
         body.dark-mode .modal-header {
             color: var(--bright-accent);
         }
-
+        
         body.dark-mode .close {
             color: var(--bright-accent);
             transition: var(--transition);
         }
-
+        
         body.dark-mode .close:hover {
             color: #fff;
             transform: rotate(90deg);
         }
-
+        
+        /* Hero Slider */
         body.dark-mode .hero-slider {
             box-shadow: 0 15px 40px rgba(255, 140, 66, 0.3);
         }
-
+        
         body.dark-mode .slide h2,
         body.dark-mode .slide p,
         body.dark-mode .slide-btn {
             color: #ffdca4;
         }
-
+        
         body.dark-mode .slider-dots .dot {
             background: rgba(255, 255, 255, 0.3);
             border-color: rgba(255, 255, 255, 0.4);
         }
-
+        
         body.dark-mode .slider-dots .dot.active {
             background: var(--bright-accent);
             border-color: var(--bright-accent);
         }
-
+        
+        /* Footer */
         body.dark-mode footer {
-            background: #1e7e34;
-            color: #ffdca4;
+            background: linear-gradient(135deg, #0f111a, #16213e);
+            color: #ffb870;
             box-shadow: 0 -4px 12px rgba(255, 140, 66, 0.5);
             transition: var(--transition);
         }
 
-        body.dark-mode .quick-peek-modal-content {
-            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-            box-shadow: 0 20px 60px rgba(255, 140, 66, 0.6);
-        }
-
-        body.dark-mode .quick-peek-title {
-            color: var(--bright-accent);
-        }
-
-        body.dark-mode .quick-peek-input-group label {
-            color: var(--bright-accent);
-        }
-
-        body.dark-mode .quick-peek-input-group input {
-            background: #2a2a2a;
-            color: #e0e0e0;
-            border-color: #444;
-        }
-
-        body.dark-mode .quick-peek-input-group input:focus {
-            border-color: var(--bright-accent);
-            box-shadow: 0 0 8px rgba(255, 140, 66, 0.3);
-        }
-
-        body.dark-mode .quick-peek-btn {
-            background: linear-gradient(135deg, #ff8c42, #ff7a1f);
-            color: #1a1a1a;
-        }
-
-        body.dark-mode .quick-peek-btn:hover {
-            box-shadow: 0 6px 15px rgba(255, 140, 66, 0.3);
-        }
 
         /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+           .hero-slider {
+           margin: 0 0.5rem 2rem 0.5rem;
+           width: calc(100% - 1rem);
+            }
+        }
+
+
         @media (max-width: 1024px) {
             .tiles-container {
                 grid-template-columns: repeat(4, 1fr);
@@ -887,22 +730,6 @@
             .slider-dots {
                 bottom: 15px;
             }
-
-            .hero-slider {
-                margin: 0 0.5rem 2rem 0.5rem;
-                width: calc(100% - 1rem);
-                height: 350px;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .quick-peek-icons {
-                width: 100%;
-                justify-content: center;
-            }
         }
     </style>
 </head>
@@ -913,17 +740,14 @@
             <a href="#" class="logo">🚭 CLEAR-PATH</a>
             <div class="nav-links">
                 <a href="https://www.mermaidchart.com/raw/1a2c2b6e-4479-40db-a8fb-af2ce6ed3a94?theme=light&version=v0.1&format=svg" target="_blank" class="nav-link">
-                    <i class="fas fa-link"></i> Flowchart
+                        <i class="fas fa-link"></i> Flowchart to Program
                 </a>
-                <a href="https://www.mermaidchart.com/raw/844a6d38-a225-4880-8969-ea64ce059c28?theme=light&version=v0.1&format=svg" target="_blank" class="nav-link">
-                    <i class="fas fa-link"></i> Companion
-                </a>
-                <a href="#" class="nav-link">📚 Resources</a>
 
-                <div class="quick-peek-icons">
-                    <button class="quick-peek-icon" onclick="openQuickPeek('money')" title="Money Saved">💰</button>
-                    <button class="quick-peek-icon" onclick="openQuickPeek('tar')" title="Tar Not Consumed">🚭</button>
-                </div>
+                <a href="https://www.mermaidchart.com/raw/844a6d38-a225-4880-8969-ea64ce059c28?theme=light&version=v0.1&format=svg" target="_blank" class="nav-link">
+                        <i class="fas fa-link"></i> Craving Companion
+                </a>
+                
+                <a href="#" class="nav-link">📚 Resources</a>
 
                 <button class="theme-toggle" onclick="toggleDarkMode()">☀️</button>
             </div>
@@ -935,15 +759,17 @@
         <div class="slides-container">
             <!-- Slide 1 -->
             <div class="slide active">
+                <img src="IMAGES3.png" alt="Success tracking" class="slide-bg">
                 <div class="slide-content">
                     <h2>Assess. Understand. Transform.</h2>
-                    <p>Begin your personalized journey toward smoking cessation using evidence-based tools and procedure. Gain a clear understanding of the foundations and rationale behind our cessation program.</p>
-                    <button class="slide-btn" onclick="scrollToTiles()">Let's Get Started →</button>
+                    <p>Begin your personalized journey toward smoking cessation using evidence-based tools and procedure. Gain a clear understanding of the foundations and rationale behind our cessation program. </p>
+                    <button class="slide-btn" onclick="scrollToTiles()"> <a href="https://www.mermaidchart.com/raw/1a2c2b6e-4479-40db-a8fb-af2ce6ed3a94?theme=light&version=v0.1&format=svg" class="slide-btn">Let's Get Started →</a> </button>
                 </div>
             </div>
 
             <!-- Slide 2 -->
             <div class="slide">
+                <img src="IMAGES2.png" alt="Success tracking" class="slide-bg">
                 <div class="slide-content">
                     <h2>Science-Backed Tools</h2>
                     <p>Explore validated instruments that identify the physiological, psychological, and genetic root causes of nicotine dependence, helping to create a detailed smoker profile for a targeted cessation program.</p>
@@ -953,6 +779,7 @@
 
             <!-- Slide 3 -->
             <div class="slide">
+                <img src="IMAGES.png" alt="Success tracking" class="slide-bg">
                 <div class="slide-content">
                     <h2>Track Progress, Stay Motivated.</h2>
                     <p>Track your withdrawal, dependence recovery, and personal challenges, and strengthen your progress with our structured follow-up, feedback tools, and web-based companion.</p>
@@ -984,10 +811,24 @@
                     <h2>Understand Smoking Behavior</h2>
                     <p>Live Free Again, Unhook the Mind</p>
                 </div>
-                <div class="tile-body">
-                    <p>This book explores smoking behavior with relevance for clinicians, smokers, and researchers. It synthesizes research from receptor-level mechanisms to behavioral manifestations across system, circuit, and cognitive processes.</p>
-                    <button class="tile-btn">Understand Smoking →</button>
-                </div>
+
+
+
+<div class="tile-body">
+    <p>This book explores smoking behavior with relevance for clinicians, smokers, and researchers. It synthesizes research from receptor-level mechanisms to behavioral manifestations across system, circuit, and cognitive processes, integrating diverse perspectives and approaches. It also introduces new insights and computational models of smoking behavior, offering a clinically informed perspective. Readers will gain a deep understanding of the multifaceted and complex nature of smoking behavior.</p>
+    
+    <!-- Clickable Image -->
+    <a href="https://doi.org/10.31234/osf.io/j8p6f_v1" target="_blank" rel="noopener noreferrer">
+        <img src="IMAG.png" alt="CLEAR-PATH" style="width:100%; border-radius: 12px; cursor: pointer;">
+    </a>
+
+    <!-- Link below the image -->
+    <a href="https://doi.org/10.31234/osf.io/j8p6f_v1" target="_blank" rel="noopener noreferrer" class="tile-btn" style="margin-top: 1rem; display: inline-block; text-decoration: none;">
+        Understand Smoking Inside-Out →
+    </a>
+</div>
+
+
             </div>
 
             <!-- Tile 2: Assessment Scales -->
@@ -998,7 +839,7 @@
                     <p>Understand and characterize the Smoker</p>
                 </div>
                 <div class="tile-body">
-                    <p>Complete validated assessments to measure nicotine dependence, withdrawal, motivation, rationalizations, and personality factors. System integrates computational model-based tools.</p>
+                    <p>Complete validated assessments to measure nicotine dependence, withdrawal, motivation, rationalizations, and personality factors. In addition to these scales, the system integrates computational model–based tools that provide deeper behavioral insights and enhance smoker profiling accuracy. </p>
                     <button class="tile-btn">Profile the Smoker →</button>
                 </div>
             </div>
@@ -1011,7 +852,7 @@
                     <p>Get personalized plan</p>
                 </div>
                 <div class="tile-body">
-                    <p>Get a personalized first week cessation program based on smoker's comprehensive smoking profile and assessment results.</p>
+                    <p> Get a personalized first week cessation program based on smoker's comprehensive smoking profile and assessment results.</p>
                     <button class="tile-btn">Build Cessation Program →</button>
                 </div>
             </div>
@@ -1024,7 +865,7 @@
                     <p>Weekly Dosage and Withdrawal Follow-Up</p>
                 </div>
                 <div class="tile-body">
-                    <p>Helps clinicians with weekly monitoring and tapering schedules, tracking the progress through the cessation journey.</p>
+                    <p> Helps clinicians with weekly monitoring and tapering schedules, tracking the progress through the cessation journey. </p>
                     <button class="tile-btn">Follow-Up →</button>
                 </div>
             </div>
@@ -1037,57 +878,12 @@
                     <p>Real-time craving management</p>
                 </div>
                 <div class="tile-body">
-                    <p>Access immediate support tools, cognitive reframes, breathing exercises, and a full personal toolkit for anytime support.</p>
+                    <p>Access immediate support tools, cognitive reframes, breathing exercises, and a full personal toolkit for anytime support. You can also plan for future risky situations in advance. Set up a schedule to receive check-ins from this tool, or use it instantly whenever you need. </p>
                     <button class="tile-btn">Open Companion →</button>
                 </div>
             </div>
         </section>
     </main>
-
-    <!-- ========== QUICK PEEK MODALS ========== -->
-    <!-- Quick Peek Money Modal -->
-    <div id="moneyQuickPeekModal" class="quick-peek-modal">
-        <div class="quick-peek-modal-content">
-            <span class="close" onclick="closeQuickPeek('money')">&times;</span>
-            <h2 class="quick-peek-title">💰 Money Saved</h2>
-            <form class="quick-peek-form" onsubmit="calculateQuickPeekMoney(event)">
-                <div class="quick-peek-input-group">
-                    <label>Cigarettes smoked daily before:</label>
-                    <input type="number" id="moneyCigsBefore" placeholder="e.g., 10" min="0" required>
-                </div>
-                <div class="quick-peek-input-group">
-                    <label>Cigarettes smoked this week (total):</label>
-                    <input type="number" id="moneyCigsThisWeek" placeholder="e.g., 5" min="0" required>
-                </div>
-                <div class="quick-peek-input-group">
-                    <label>Price per cigarette (₹):</label>
-                    <input type="number" id="moneyPrice" placeholder="e.g., 10" min="0" step="0.50" required>
-                </div>
-                <button type="submit" class="quick-peek-btn">Calculate Savings</button>
-            </form>
-            <div id="moneyResult"></div>
-        </div>
-    </div>
-
-    <!-- Quick Peek Tar Modal -->
-    <div id="tarQuickPeekModal" class="quick-peek-modal">
-        <div class="quick-peek-modal-content">
-            <span class="close" onclick="closeQuickPeek('tar')">&times;</span>
-            <h2 class="quick-peek-title">🫁 Tar Not Consumed</h2>
-            <form class="quick-peek-form" onsubmit="calculateQuickPeekTar(event)">
-                <div class="quick-peek-input-group">
-                    <label>Cigarettes smoked daily before:</label>
-                    <input type="number" id="tarCigsBefore" placeholder="e.g., 10" min="0" required>
-                </div>
-                <div class="quick-peek-input-group">
-                    <label>Cigarettes smoked this week (total):</label>
-                    <input type="number" id="tarCigsThisWeek" placeholder="e.g., 5" min="0" required>
-                </div>
-                <button type="submit" class="quick-peek-btn">Calculate Tar Saved</button>
-            </form>
-            <div id="tarResult"></div>
-        </div>
-    </div>
 
     <!-- ========== MODALS ========== -->
     <div id="behaviorModal" class="modal">
@@ -1097,14 +893,18 @@
             <div class="modal-body">
                 <p>Understanding your smoking behavior is the foundation of successful cessation.</p>
                 <ul>
-                    <li><strong>Smoking Patterns:</strong> When, where, and why you smoke, including routines and daily situations.</li>
-                    <li><strong>Triggers:</strong> Emotional, environmental, and physical cues that create the urge to smoke.</li>
-                    <li><strong>Dependencies:</strong> How physical addiction, psychological needs, and social factors work together.</li>
-                    <li><strong>Rationalizations:</strong> Thoughts or beliefs that make smoking seem acceptable or justified.</li>
-                    <li><strong>Personality and Traits:</strong> How individual differences influence smoking habits.</li>
-                    <li><strong>Cognitive Processes:</strong> How attention, memory, and decision-making affect smoking choices.</li>
-                    <li><strong>Social and Environmental Factors:</strong> How peers, family, culture, and surroundings shape smoking behavior.</li>
-                    <li><strong>Relapse Dynamics:</strong> Why relapses occur and common situations involved.</li>
+
+                <li><strong>Smoking Patterns:</strong> When, where, and why you smoke, including routines and daily situations that reinforce the habit.</li>
+                <li><strong>Triggers:</strong> Emotional, environmental, and physical cues that create the urge to smoke.</li>
+                <li><strong>Dependencies:</strong> How physical addiction, psychological needs, and social factors work together to sustain smoking.</li>
+                <li><strong>Rationalizations:</strong> Thoughts or beliefs that make smoking seem acceptable, necessary, or justified.</li>
+                <li><strong>Personality and Traits:</strong> How individual differences, such as impulsivity or stress sensitivity, influence smoking habits.</li>
+                <li><strong>Cognitive Processes:</strong> How attention, memory, and decision-making affect smoking choices and relapse risk.</li>
+                <li><strong>Social and Environmental Factors:</strong> How peers, family, culture, and surroundings shape smoking behavior.</li>
+                <li><strong>Relapse Dynamics:</strong> Why relapses occur, including common situations, emotions, and thinking patterns involved.</li>
+                <li><strong>Computational Models:</strong> Novel data-based approaches that simulate smoking behavior and can help predict craving, relapse, and treatment outcomes.</li>
+                <li><strong>Biological and Brain Insights:</strong> How receptors, brain circuits, and body systems interact to drive dependence and craving.</li>
+
                 </ul>
             </div>
         </div>
@@ -1119,10 +919,11 @@
                 <ul>
                     <li><strong>Nicotine Dependence Check:</strong> Measures the intensity of physical dependence on nicotine.</li>
                     <li><strong>Withdrawal Symptom Rating:</strong> Assesses the severity of nicotine withdrawal effects.</li>
-                    <li><strong>Smoking Motivation Assessment:</strong> Evaluates key reasons and triggers behind smoking behavior.</li>
-                    <li><strong>Motivation to Quit Survey:</strong> Determines readiness and commitment to quit.</li>
-                    <li><strong>Personality Profile Test:</strong> Explores personality traits that influence smoking.</li>
-                    <li><strong>Genetic Predisposition Assessment:</strong> Estimates biological tendencies related to nicotine use.</li>
+                    <li><strong>Smoking Motivation Assessment:</strong> Evaluates the key reasons and triggers behind smoking behavior.</li>
+                    <li><strong>Motivation to Quit Survey:</strong> Determines readiness, confidence, and commitment to quit smoking.</li>
+                    <li><strong>Personality Profile Test:</strong> Explores personality traits that influence smoking and quitting patterns.</li>
+                    <li><strong>Genetic Predisposition Assessment:</strong> Estimates biological and hereditary tendencies related to nicotine use.</li>
+                    <li><strong>Nicotine Level Estimator:</strong> Calculates estimated nicotine absorption and blood concentration over time.</li>
                 </ul>
                 <div class="modal-links">
                     <a href="WISD.html">📊 Smoking Motivation Assessment</a>
@@ -1159,14 +960,14 @@
     <div id="toolsModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('toolsModal')">&times;</span>
-            <h2 class="modal-header">📈 Weekly Follow-Up</h2>
+            <h2 class="modal-header"> 🔁 Weekly Follow-Up</h2>
             <div class="modal-body">
                 <p>Monitor the trajectory of the Cessation Program:</p>
                 <ul>
                     <li><strong>Nicotinic Recovery:</strong> Track the reversal of biological dependence.</li>
                     <li><strong>Psychological Renewal:</strong> Monitor the fading of associations and potential triggers.</li>
                     <li><strong>Withdrawal Log:</strong> Keep track of withdrawal symptoms and improvements.</li>
-                    <li><strong>Savings Tracker:</strong> See how much money you've saved over time.</li>
+                    <li><strong>Savings Tracker:</strong> See how much money you’ve saved over time.</li>
                 </ul>
                 <div class="modal-links">
                     <a href="follow_up.html">📈 Weekly Follow-Up</a>
@@ -1192,28 +993,32 @@
                     <li>Scheduling reminders for crisis management</li>
                 </ul>
                 <div class="modal-links">
-                    <a href="smoking-cessation.html">🚭 Open Companion</a>
+                    <a href="smoking-cessation.html" style="background: linear-gradient(135deg, var(--bright-accent), #ff7a1f); color: white;">🚭 Open Companion</a>
                 </div>
             </div>
         </div>
     </div>
 
+
+
+
+    
+
     <!-- ========== FOOTER ========== -->
-    <footer>
-        <p>
-            &copy; 2025 CLEAR-PATH Smoking Cessation Program. &nbsp;|&nbsp;
-            Contact: Kshiteesh Bhardwaj (nirvikalpakshiteesh@gmail.com), Pragathi P. Balasubramani (pbalasub@iitk.ac.in)
-        </p>
+    <footer style="background: #32a852; color: white; padding: 1rem 0; text-align: center; font-size: 14px;">
+      <p>
+        &copy; 2025 CLEAR-PATH Smoking Cessation Program. &nbsp;|&nbsp; 
+        Contact: Kshiteesh Bhardwaj (nirvikalpakshiteesh@gmail.com), Pragathi P. Balasubramani (pbalasub@iitk.ac.in)
+      </p>
     </footer>
 
-    <script>
-        const AVG_TAR_PER_CIGARETTE = 0.73; // mg
 
-        // ========== SLIDER FUNCTIONS ==========
+    <script>
         let currentSlideIndex = 0;
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
 
+        // Auto-slide every 6 seconds
         setInterval(() => {
             currentSlideIndex = (currentSlideIndex + 1) % slides.length;
             updateSlide();
@@ -1227,12 +1032,11 @@
         function updateSlide() {
             slides.forEach(slide => slide.classList.remove('active'));
             dots.forEach(dot => dot.classList.remove('active'));
-
+            
             slides[currentSlideIndex].classList.add('active');
             dots[currentSlideIndex].classList.add('active');
         }
 
-        // ========== MODAL FUNCTIONS ==========
         function openModal(modalId) {
             document.getElementById(modalId).style.display = 'block';
             document.body.style.overflow = 'hidden';
@@ -1243,118 +1047,36 @@
             document.body.style.overflow = 'auto';
         }
 
-        window.addEventListener('click', function(event) {
+        window.onclick = function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
                 document.body.style.overflow = 'auto';
             }
-        });
-
-        // ========== QUICK PEEK FUNCTIONS ==========
-        function openQuickPeek(type) {
-            if (type === 'money') {
-                document.getElementById('moneyQuickPeekModal').style.display = 'block';
-            } else if (type === 'tar') {
-                document.getElementById('tarQuickPeekModal').style.display = 'block';
-            }
-            document.body.style.overflow = 'hidden';
         }
 
-        function closeQuickPeek(type) {
-            if (type === 'money') {
-                document.getElementById('moneyQuickPeekModal').style.display = 'none';
-            } else if (type === 'tar') {
-                document.getElementById('tarQuickPeekModal').style.display = 'none';
-            }
-            document.body.style.overflow = 'auto';
-        }
-
-        function calculateQuickPeekMoney(event) {
-            event.preventDefault();
-
-            const cigsBefore = parseFloat(document.getElementById('moneyCigsBefore').value) || 0;
-            const cigsThisWeek = parseFloat(document.getElementById('moneyCigsThisWeek').value) || 0;
-            const pricePerCig = parseFloat(document.getElementById('moneyPrice').value) || 0;
-
-            if (!cigsBefore || !pricePerCig) {
-                document.getElementById('moneyResult').innerHTML = '<div class="quick-peek-result money">❌ Please fill all fields</div>';
-                return;
-            }
-
-            const expectedCigs = cigsBefore * 7;
-            const cigsSaved = expectedCigs - cigsThisWeek;
-            const moneySaved = cigsSaved * pricePerCig;
-
-            const result = `
-                <div class="quick-peek-result money">
-                    <p>📊 <strong>Expected cigarettes:</strong> ${expectedCigs}</p>
-                    <p>🚭 <strong>Actual cigarettes:</strong> ${cigsThisWeek}</p>
-                    <p>✅ <strong>Cigarettes avoided:</strong> ${cigsSaved}</p>
-                    <p style="font-size: 1.3rem; margin-top: 1rem;">💚 <strong>Money Saved: ₹${moneySaved.toFixed(2)}</strong></p>
-                </div>
-            `;
-
-            document.getElementById('moneyResult').innerHTML = result;
-        }
-
-        function calculateQuickPeekTar(event) {
-            event.preventDefault();
-
-            const cigsBefore = parseFloat(document.getElementById('tarCigsBefore').value) || 0;
-            const cigsThisWeek = parseFloat(document.getElementById('tarCigsThisWeek').value) || 0;
-
-            if (!cigsBefore) {
-                document.getElementById('tarResult').innerHTML = '<div class="quick-peek-result tar">❌ Please fill all fields</div>';
-                return;
-            }
-
-            const expectedCigs = cigsBefore * 7;
-            const cigsSaved = expectedCigs - cigsThisWeek;
-            const tarSaved = cigsSaved * AVG_TAR_PER_CIGARETTE;
-
-            const result = `
-                <div class="quick-peek-result tar">
-                    <p>📊 <strong>Expected cigarettes:</strong> ${expectedCigs}</p>
-                    <p>🚭 <strong>Actual cigarettes:</strong> ${cigsThisWeek}</p>
-                    <p>✅ <strong>Cigarettes avoided:</strong> ${cigsSaved}</p>
-                    <p style="font-size: 1.3rem; margin-top: 1rem;">🫁 <strong>Tar Not Consumed: ${tarSaved.toFixed(2)} mg</strong></p>
-                    <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 0.5rem;"><em>Average tar per cigarette: ${AVG_TAR_PER_CIGARETTE} mg</em></p>
-                </div>
-            `;
-
-            document.getElementById('tarResult').innerHTML = result;
-        }
-
-        window.addEventListener('click', function(event) {
-            const moneyModal = document.getElementById('moneyQuickPeekModal');
-            const tarModal = document.getElementById('tarQuickPeekModal');
-
-            if (event.target === moneyModal) {
-                closeQuickPeek('money');
-            }
-            if (event.target === tarModal) {
-                closeQuickPeek('tar');
-            }
-        });
-
-        // ========== DARK MODE ==========
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             const toggle = document.querySelector('.theme-toggle');
             toggle.textContent = document.body.classList.contains('dark-mode') ? '🌙' : '☀️';
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
         }
 
-        // Initialize dark mode from localStorage
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.body.classList.add('dark-mode');
-            document.querySelector('.theme-toggle').textContent = '🌙';
-        }
-
-        // ========== SCROLL FUNCTION ==========
         function scrollToTiles() {
             document.getElementById('tilesSection').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
