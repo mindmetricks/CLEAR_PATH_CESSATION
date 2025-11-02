@@ -115,6 +115,55 @@ main{
 .panel-card::-webkit-scrollbar-thumb{background:#888;border-radius:10px;}
 .panel-card::-webkit-scrollbar-thumb:hover{background:#555;}
 
+
+.panel-card {
+  background: white;
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);  /* Add this */
+  margin-bottom: 16px;
+  transition: transform 0.2s ease;  /* Add this */
+}
+
+.panel-card:hover {
+  transform: translateY(-2px);  /* Add subtle lift on hover */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+
+.option-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;  /* Add tighter spacing */
+}
+
+.option-desc {
+  color: #555;  /* Softer than pure dark */
+  line-height: 1.8;  /* More breathing room */
+}
+
+header .home-link {
+  text-decoration: none;
+  color: white;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);  /* Add glass effect */
+  transition: all 0.3s ease;
+  font-weight: 600;
+  border: 2px solid transparent;
+}
+
+header .home-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+
 .option-card{
   background:white;border-radius:10px;padding:14px;margin:12px 0;
   box-shadow:0 6px 20px rgba(0,0,0,0.08);cursor:pointer;
