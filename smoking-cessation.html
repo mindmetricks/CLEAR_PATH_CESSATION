@@ -148,6 +148,24 @@ main{
 }
 
 
+header span[style*="color:#FFFFFF"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+header span[style*="color:#FFFFFF"]::before {
+  content: "🫂";
+  animation: float 3s ease-in-out infinite;
+  font-size: 1.6rem;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+
 .option-title {
   font-size: 1.5rem;
   font-weight: 700;
